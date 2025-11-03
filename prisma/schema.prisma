@@ -1,0 +1,106 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String?
+  imageUrl      String?
+  role          Role     @default(MEMBER)
+  phone         String?  @unique
+  city          String?
+  occupation    String?
+  description   String?
+  instagramUrl  String?
+  linkedinUrl   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  memberships   MemberGroup[]
+  eventJoins    EventJoin[]
+  createdEvents Event[]   @relation("EventCreator")
+}
+
+model Group {
+  id        String   @id @default(cuid())
+  name      String   @unique // e.g. "party", "mingling", "yoga", "business"
+  waId      String?  // external WhatsApp group id (optional now)
+  createdAt DateTime @default(now())
+  members   MemberGroup[]
+  targetEvents EventTargetGroup[] @relation("EventTargetGroups")
+}
+
+model MemberGroup {
+  id        String   @id @default(cuid())
+  userId    String
+  groupId   String
+  role      String?  // optional (e.g. subgroup moderator)
+  createdAt DateTime @default(now())
+  @@unique([userId, groupId])
+  @@index([userId])
+  @@index([groupId])
+  user   User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  group  Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  imageUrl    String?
+  category    String   // "party" | "yoga" | "mingling" | "business" | other
+  startsAt    DateTime?
+  endsAt      DateTime?
+  location    String?
+  createdById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  shortCode   String   @unique // for short links
+
+  createdBy   User     @relation("EventCreator", fields: [createdById], references: [id])
+  joins       EventJoin[]
+  targets     EventTargetGroup[]
+  
+  @@index([shortCode])
+  @@index([category])
+  @@index([createdById])
+}
+
+model EventTargetGroup {
+  id      String @id @default(cuid())
+  eventId String
+  groupId String
+  event   Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  group   Group @relation("EventTargetGroups", fields: [groupId], references: [id], onDelete: Cascade)
+  @@unique([eventId, groupId])
+  @@index([eventId])
+  @@index([groupId])
+}
+
+model EventJoin {
+  id        String   @id @default(cuid())
+  eventId   String
+  userId    String
+  paid      Boolean  @default(false) // future PayBox
+  qrCode    String?  // store data / path to image
+  createdAt DateTime @default(now())
+  @@unique([eventId, userId])
+  @@index([eventId])
+  @@index([userId])
+  event   Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
