@@ -58,9 +58,10 @@ async function getEvent(shortCode: string) {
 export default async function EventPage({
   params,
 }: {
-  params: { shortCode: string };
+  params: Promise<{ shortCode: string }>;
 }) {
-  const event = await getEvent(params.shortCode);
+  const { shortCode } = await params;
+  const event = await getEvent(shortCode);
   const user = await getSessionUser();
 
   if (!event) {
@@ -73,12 +74,16 @@ export default async function EventPage({
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <Link
-        href="/"
-        className="text-blue-600 hover:underline mb-4 inline-block"
-      >
-        ← Back to events
-      </Link>
+      <div className="flex items-center justify-between mb-4">
+        <Link href="/" className="text-blue-600 hover:underline inline-block">
+          ← Back to events
+        </Link>
+        {user?.role === "ADMIN" && (
+          <Link href={`/admin/events/${shortCode}/edit`}>
+            <Button variant="outline">Edit Event</Button>
+          </Link>
+        )}
+      </div>
 
       <Card>
         {event.imageUrl && (

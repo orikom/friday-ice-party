@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
         _count: {
           select: {
             members: true,
-            events: true,
+            targetEvents: true,
           },
         },
       },

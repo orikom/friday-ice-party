@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -36,9 +36,25 @@ interface Group {
   name: string;
 }
 
-export default function CreateEventPage() {
+interface Event {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  imageUrl?: string | null;
+  startsAt?: string | null;
+  endsAt?: string | null;
+  location?: string | null;
+  targets: Array<{ groupId: string }>;
+}
+
+export default function EditEventPage() {
   const router = useRouter();
+  const params = useParams();
+  const shortCode = params.shortCode as string;
   const [groups, setGroups] = useState<Group[]>([]);
+  const [event, setEvent] = useState<Event | null>(null);
+  const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -55,16 +71,68 @@ export default function CreateEventPage() {
   const selectedGroups = watch("targetGroupIds") || [];
 
   useEffect(() => {
-    fetchGroups();
-  }, []);
+    fetchData();
+  }, [shortCode]);
 
-  const fetchGroups = async () => {
+  const fetchData = async () => {
     try {
-      const response = await fetch("/api/admin/groups");
-      const data = await response.json();
-      setGroups(data.groups || []);
+      const [eventResponse, groupsResponse] = await Promise.all([
+        fetch(`/api/events/${shortCode}`),
+        fetch("/api/admin/groups"),
+      ]);
+
+      if (!eventResponse.ok) {
+        throw new Error("Failed to fetch event");
+      }
+
+      const eventData = await eventResponse.json();
+      const groupsData = await groupsResponse.json();
+
+      setEvent(eventData.event);
+      setGroups(groupsData.groups || []);
+
+      // Pre-populate form with event data
+      const event = eventData.event;
+      setValue("title", event.title);
+      setValue("description", event.description);
+      setValue("category", event.category);
+      setValue("imageUrl", event.imageUrl || "");
+      setValue("location", event.location || "");
+
+      // Format dates for datetime-local input
+      if (event.startsAt) {
+        const startsAt = new Date(event.startsAt);
+        const localDateTime = new Date(
+          startsAt.getTime() - startsAt.getTimezoneOffset() * 60000
+        )
+          .toISOString()
+          .slice(0, 16);
+        setValue("startsAt", localDateTime);
+      }
+
+      if (event.endsAt) {
+        const endsAt = new Date(event.endsAt);
+        const localDateTime = new Date(
+          endsAt.getTime() - endsAt.getTimezoneOffset() * 60000
+        )
+          .toISOString()
+          .slice(0, 16);
+        setValue("endsAt", localDateTime);
+      }
+
+      // Set selected groups
+      if (event.targets && event.targets.length > 0) {
+        setValue(
+          "targetGroupIds",
+          event.targets.map((t: any) => t.groupId || t.group?.id)
+        );
+      }
     } catch (error) {
-      console.error("Failed to fetch groups:", error);
+      console.error("Failed to fetch data:", error);
+      alert("Failed to load event data");
+      router.push("/admin");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -106,8 +174,8 @@ export default function CreateEventPage() {
         endsAt: data.endsAt ? new Date(data.endsAt).toISOString() : null,
       };
 
-      const response = await fetch("/api/events", {
-        method: "POST",
+      const response = await fetch(`/api/events/${shortCode}`, {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
@@ -122,18 +190,18 @@ export default function CreateEventPage() {
             .join("\n");
           alert(`Validation errors:\n${errorMessages}`);
         } else {
-          alert(errorData.error || "Failed to create event");
+          alert(errorData.error || "Failed to update event");
         }
-        throw new Error(errorData.error || "Failed to create event");
+        throw new Error(errorData.error || "Failed to update event");
       }
 
-      router.push("/admin");
+      router.push(`/events/${shortCode}`);
     } catch (error) {
-      console.error("Create event error:", error);
+      console.error("Update event error:", error);
       // Don't show alert again if we already showed validation errors
       if (!(error instanceof Error && error.message.includes("Validation"))) {
         alert(
-          error instanceof Error ? error.message : "Failed to create event"
+          error instanceof Error ? error.message : "Failed to update event"
         );
       }
     } finally {
@@ -153,14 +221,37 @@ export default function CreateEventPage() {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8 max-w-2xl">
+        <div className="text-center py-12">
+          <p className="text-gray-500">Loading event...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!event) {
+    return (
+      <div className="container mx-auto px-4 py-8 max-w-2xl">
+        <div className="text-center py-12">
+          <p className="text-red-600">Event not found</p>
+          <Button onClick={() => router.push("/admin")} className="mt-4">
+            Back to Admin
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-2xl">
-      <h1 className="text-4xl font-bold mb-8">Create Event</h1>
+      <h1 className="text-4xl font-bold mb-8">Edit Event</h1>
 
       <Card>
         <CardHeader>
           <CardTitle>Event Details</CardTitle>
-          <CardDescription>Fill in the details for your event</CardDescription>
+          <CardDescription>Update the details for your event</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -214,6 +305,11 @@ export default function CreateEventPage() {
               {watch("imageUrl") && (
                 <p className="text-sm text-green-600 mt-1">Image uploaded</p>
               )}
+              {event.imageUrl && !watch("imageUrl") && (
+                <p className="text-sm text-gray-500 mt-1">
+                  Current image: {event.imageUrl}
+                </p>
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -263,7 +359,7 @@ export default function CreateEventPage() {
 
             <div className="flex gap-4">
               <Button type="submit" disabled={submitting}>
-                {submitting ? "Creating..." : "Create Event"}
+                {submitting ? "Updating..." : "Update Event"}
               </Button>
               <Button
                 type="button"

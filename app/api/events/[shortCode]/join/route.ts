@@ -5,11 +5,11 @@ import { generateEventJoinQR } from "@/lib/qrcode";
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { shortCode: string } }
+  { params }: { params: Promise<{ shortCode: string }> }
 ) {
   try {
     const user = await requireAuth();
-    const shortCode = params.shortCode;
+    const { shortCode } = await params;
 
     // Get event
     const event = await prisma.event.findUnique({

@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -14,10 +16,11 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Image from "next/image";
-import { Instagram, Linkedin, Phone, MoreVertical } from "lucide-react";
+import { Instagram, Linkedin, Phone, MoreVertical, Edit } from "lucide-react";
 
 interface Member {
   id: string;
@@ -113,13 +116,14 @@ export default function MembersPage() {
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
                     {member.imageUrl ? (
-                      <Image
-                        src={member.imageUrl}
-                        alt={member.name || "Member"}
-                        width={48}
-                        height={48}
-                        className="rounded-full"
-                      />
+                      <div className="relative w-12 h-12 flex-shrink-0">
+                        <Image
+                          src={member.imageUrl}
+                          alt={member.name || "Member"}
+                          fill
+                          className="rounded-full object-cover"
+                        />
+                      </div>
                     ) : (
                       <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
                         <span className="text-gray-500 text-lg">
@@ -158,6 +162,10 @@ export default function MembersPage() {
 }
 
 function MemberDropdown({ member }: { member: Member }) {
+  const { data: session } = useSession();
+  const router = useRouter();
+  const isOwnProfile = session?.user?.id === member.id;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -180,6 +188,16 @@ function MemberDropdown({ member }: { member: Member }) {
             <div className="text-sm text-gray-600 mt-2">
               {member.description}
             </div>
+          )}
+          {isOwnProfile && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => router.push("/profile")}>
+                <Edit className="h-4 w-4 mr-2" />
+                Edit Profile
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </>
           )}
           <div className="flex gap-2 pt-2 border-t">
             {member.phone && (

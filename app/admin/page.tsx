@@ -81,9 +81,14 @@ export default async function AdminDashboard() {
             <CardTitle>Events</CardTitle>
             <CardDescription>Create and manage events</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-2">
             <Link href="/admin/events/new">
               <Button className="w-full">Create Event</Button>
+            </Link>
+            <Link href="/admin/events">
+              <Button className="w-full" variant="outline">
+                Manage Events
+              </Button>
             </Link>
           </CardContent>
         </Card>

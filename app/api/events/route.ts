@@ -7,12 +7,12 @@ import { getWhatsAppAdapter } from "@/lib/messaging/WhatsAppAdapter";
 import { getStorageAdapter } from "@/lib/storage/StorageAdapter";
 
 const createEventSchema = z.object({
-  title: z.string().min(1),
-  description: z.string().min(1),
-  category: z.string(),
+  title: z.string().min(1, "Title is required"),
+  description: z.string().min(1, "Description is required"),
+  category: z.string().min(1, "Category is required"),
   imageUrl: z.string().optional(),
-  startsAt: z.string().datetime().optional().nullable(),
-  endsAt: z.string().datetime().optional().nullable(),
+  startsAt: z.string().optional().nullable(),
+  endsAt: z.string().optional().nullable(),
   location: z.string().optional(),
   targetGroupIds: z.array(z.string()).optional(),
 });
@@ -22,7 +22,20 @@ export async function POST(req: NextRequest) {
     const admin = await requireAdmin();
 
     const body = await req.json();
-    const data = createEventSchema.parse(body);
+
+    // Convert empty strings to null for optional fields
+    const cleanedBody = {
+      ...body,
+      startsAt: body.startsAt && body.startsAt !== "" ? body.startsAt : null,
+      endsAt: body.endsAt && body.endsAt !== "" ? body.endsAt : null,
+    };
+
+    const data = createEventSchema.parse(cleanedBody);
+
+    // Convert datetime strings to Date objects
+    // datetime-local format is "YYYY-MM-DDTHH:mm" which can be parsed directly
+    const startsAtDate = data.startsAt ? new Date(data.startsAt) : null;
+    const endsAtDate = data.endsAt ? new Date(data.endsAt) : null;
 
     // Generate unique short code
     let shortCode = generateShortCode();
@@ -42,8 +55,8 @@ export async function POST(req: NextRequest) {
         description: data.description,
         category: data.category,
         imageUrl: data.imageUrl,
-        startsAt: data.startsAt ? new Date(data.startsAt) : null,
-        endsAt: data.endsAt ? new Date(data.endsAt) : null,
+        startsAt: startsAtDate,
+        endsAt: endsAtDate,
         location: data.location,
         createdById: admin.id,
         shortCode,
@@ -93,15 +106,26 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ event }, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
+      console.error("Validation errors:", error.errors);
       return NextResponse.json(
-        { error: "Invalid input", details: error.errors },
+        {
+          error: "Invalid input",
+          details: error.errors.map((err) => ({
+            path: err.path,
+            message: err.message,
+            code: err.code,
+          })),
+        },
         { status: 400 }
       );
     }
 
     console.error("Create event error:", error);
     return NextResponse.json(
-      { error: "Failed to create event" },
+      {
+        error:
+          error instanceof Error ? error.message : "Failed to create event",
+      },
       { status: 500 }
     );
   }

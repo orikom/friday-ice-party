@@ -6,11 +6,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { prisma } from "@/lib/prisma";
 import { InviteMemberForm } from "@/components/InviteMemberForm";
+import { MembersList } from "@/components/MembersList";
 
 async function getMembers() {
   return await prisma.user.findMany({
@@ -23,6 +21,9 @@ async function getMembers() {
       phone: true,
       city: true,
       occupation: true,
+      description: true,
+      instagramUrl: true,
+      linkedinUrl: true,
       createdAt: true,
     },
   });
@@ -55,28 +56,7 @@ export default async function AdminMembersPage() {
           <CardDescription>{members.length} total members</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {members.map((member) => (
-              <div
-                key={member.id}
-                className="flex items-center justify-between p-4 border rounded-lg"
-              >
-                <div>
-                  <div className="font-semibold">
-                    {member.name || member.email}
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    {member.email} • {member.role}
-                  </div>
-                  {member.city && (
-                    <div className="text-xs text-gray-500">
-                      📍 {member.city}
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
+          <MembersList members={members} />
         </CardContent>
       </Card>
     </div>
