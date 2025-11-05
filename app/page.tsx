@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
 import { formatDateRange } from "@/lib/time";
-import { getSessionUser } from "@/lib/auth-helpers";
+import { requireAuth } from "@/lib/auth-helpers";
 
 async function getEvents() {
   try {
@@ -47,8 +47,8 @@ async function getEvents() {
 }
 
 export default async function HomePage() {
+  await requireAuth(); // Require authentication
   const events = await getEvents();
-  const user = await getSessionUser();
 
   return (
     <div className="container mx-auto px-4 py-8">

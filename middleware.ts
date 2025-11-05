@@ -3,12 +3,36 @@ import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 export async function middleware(req: NextRequest) {
-  // Only protect admin routes
-  if (req.nextUrl.pathname.startsWith("/admin")) {
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  const pathname = req.nextUrl.pathname;
 
-    // Check if user is authenticated and is an admin
-    if (!token || token.role !== "ADMIN") {
+  // Public routes that don't require authentication
+  const publicRoutes = ["/auth/signin", "/auth/verify", "/api/auth"];
+
+  const isPublicRoute = publicRoutes.some((route) =>
+    pathname.startsWith(route)
+  );
+
+  // Allow public routes and API routes (API routes handle their own auth)
+  if (isPublicRoute || pathname.startsWith("/api")) {
+    return NextResponse.next();
+  }
+
+  // Check authentication for all other routes
+  const token = await getToken({
+    req,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
+
+  if (!token) {
+    // Redirect to sign in with callback URL
+    const signInUrl = new URL("/auth/signin", req.url);
+    signInUrl.searchParams.set("callbackUrl", pathname);
+    return NextResponse.redirect(signInUrl);
+  }
+
+  // Admin routes require ADMIN role
+  if (pathname.startsWith("/admin")) {
+    if (token.role !== "ADMIN") {
       return NextResponse.redirect(new URL("/", req.url));
     }
   }
@@ -17,5 +41,7 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+  ],
 };

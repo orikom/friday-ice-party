@@ -75,7 +75,7 @@ export default async function AdminDashboard() {
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card>
           <CardHeader>
             <CardTitle>Events</CardTitle>
@@ -114,6 +114,19 @@ export default async function AdminDashboard() {
             <Link href="/admin/groups">
               <Button className="w-full" variant="outline">
                 Manage Groups
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Referrals</CardTitle>
+            <CardDescription>Review member referrals</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Link href="/admin/referrals">
+              <Button className="w-full" variant="outline">
+                Manage Referrals
               </Button>
             </Link>
           </CardContent>

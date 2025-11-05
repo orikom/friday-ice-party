@@ -15,6 +15,12 @@ enum Role {
   MEMBER
 }
 
+enum ReferralStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model User {
   id            String    @id @default(cuid())
   email         String    @unique
@@ -31,19 +37,21 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  memberships   MemberGroup[]
-  eventJoins    EventJoin[]
-  createdEvents Event[]   @relation("EventCreator")
-  accounts      Account[]
-  sessions      Session[]
+  memberships       MemberGroup[]
+  eventJoins        EventJoin[]
+  createdEvents     Event[]       @relation("EventCreator")
+  accounts          Account[]
+  sessions          Session[]
+  referralsMade     Referral[]    @relation("Referrer")
+  referralsReviewed Referral[]    @relation("ReviewedBy")
 }
 
 model Group {
-  id        String   @id @default(cuid())
-  name      String   @unique // e.g. "party", "mingling", "yoga", "business"
-  waId      String?  // external WhatsApp group id (optional now)
-  createdAt DateTime @default(now())
-  members   MemberGroup[]
+  id           String             @id @default(cuid())
+  name         String             @unique // e.g. "party", "mingling", "yoga", "business"
+  waId         String? // external WhatsApp group id (optional now)
+  createdAt    DateTime           @default(now())
+  members      MemberGroup[]
   targetEvents EventTargetGroup[] @relation("EventTargetGroups")
 }
 
@@ -51,33 +59,34 @@ model MemberGroup {
   id        String   @id @default(cuid())
   userId    String
   groupId   String
-  role      String?  // optional (e.g. subgroup moderator)
+  role      String? // optional (e.g. subgroup moderator)
   createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
   @@unique([userId, groupId])
   @@index([userId])
   @@index([groupId])
-  user   User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  group  Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
 }
 
 model Event {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   title       String
   description String
   imageUrl    String?
-  category    String   // "party" | "yoga" | "mingling" | "business" | other
+  category    String // "party" | "yoga" | "mingling" | "business" | other
   startsAt    DateTime?
   endsAt      DateTime?
   location    String?
   createdById String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  shortCode   String   @unique // for short links
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  shortCode   String    @unique // for short links
 
-  createdBy   User     @relation("EventCreator", fields: [createdById], references: [id])
-  joins       EventJoin[]
-  targets     EventTargetGroup[]
-  
+  createdBy User               @relation("EventCreator", fields: [createdById], references: [id])
+  joins     EventJoin[]
+  targets   EventTargetGroup[]
+
   @@index([shortCode])
   @@index([category])
   @@index([createdById])
@@ -87,8 +96,9 @@ model EventTargetGroup {
   id      String @id @default(cuid())
   eventId String
   groupId String
-  event   Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  group   Group @relation("EventTargetGroups", fields: [groupId], references: [id], onDelete: Cascade)
+  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  group   Group  @relation("EventTargetGroups", fields: [groupId], references: [id], onDelete: Cascade)
+
   @@unique([eventId, groupId])
   @@index([eventId])
   @@index([groupId])
@@ -99,13 +109,14 @@ model EventJoin {
   eventId   String
   userId    String
   paid      Boolean  @default(false) // future PayBox
-  qrCode    String?  // store data / path to image
+  qrCode    String? // store data / path to image
   createdAt DateTime @default(now())
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([eventId, userId])
   @@index([eventId])
   @@index([userId])
-  event   Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  user    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 // NextAuth required models
@@ -135,6 +146,7 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId])
 }
 
@@ -144,4 +156,48 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Referral {
+  id         String         @id @default(cuid())
+  referrerId String // Member who made the referral
+  status     ReferralStatus @default(PENDING)
+
+  // Basic info about the person being referred
+  email String
+  name  String?
+  phone String?
+  age   Int?
+
+  // Relationship details
+  howDoYouKnow String? // How does the referrer know them?
+  howLong      String? // How long have they known each other?
+
+  // Professional info
+  occupation   String?
+  linkedinUrl  String?
+  instagramUrl String?
+
+  // Personal info
+  hobbies   String? // JSON array or comma-separated
+  interests String? // JSON array or comma-separated
+  city      String?
+
+  // Additional notes
+  notes String? @db.Text
+
+  // Admin review
+  reviewedById    String? // Admin who reviewed
+  reviewedAt      DateTime?
+  rejectionReason String?   @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  referrer   User  @relation("Referrer", fields: [referrerId], references: [id], onDelete: Cascade)
+  reviewedBy User? @relation("ReviewedBy", fields: [reviewedById], references: [id])
+
+  @@index([referrerId])
+  @@index([status])
+  @@index([createdAt])
 }
