@@ -5,11 +5,11 @@ import { getWhatsAppAdapter } from "@/lib/messaging/WhatsAppAdapter";
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { shortCode: string } }
+  { params }: { params: Promise<{ shortCode: string }> }
 ) {
   try {
     const admin = await requireAdmin();
-    const shortCode = params.shortCode;
+    const { shortCode } = await params;
 
     const event = await prisma.event.findUnique({
       where: { shortCode },
