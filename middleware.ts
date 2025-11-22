@@ -47,7 +47,7 @@ export async function middleware(req: NextRequest) {
 
   // Admin routes require ADMIN role
   if (pathname.startsWith("/admin")) {
-    if (token.role !== "ADMIN") {
+    if (!token || token.role !== "ADMIN") {
       return NextResponse.redirect(new URL("/", req.url));
     }
   }

@@ -65,7 +65,11 @@ export default function GalleryPage() {
 
   // Get unique categories
   const categories = Array.from(
-    new Set(items.map((item) => item.category).filter(Boolean))
+    new Set(
+      items
+        .map((item) => item.category)
+        .filter((cat): cat is string => cat !== null && cat !== undefined)
+    )
   ).sort();
 
   if (status === "loading") {

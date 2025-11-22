@@ -64,7 +64,10 @@ export function EventsList({ events }: EventsListProps) {
                         {event.title}
                       </h3>
                       <p className="text-sm text-gray-600 mb-2">
-                        {formatDateRange(event.startsAt, event.endsAt)}
+                        {formatDateRange(
+                          event.startsAt ?? null,
+                          event.endsAt ?? null
+                        )}
                       </p>
                     </div>
                     <Badge variant="secondary">{event.category}</Badge>

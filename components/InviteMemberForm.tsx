@@ -12,7 +12,7 @@ const inviteSchema = z.object({
   email: z.string().email("אימייל לא תקין"),
   phone: z.string().optional(),
   name: z.string().optional(),
-  role: z.enum(["ADMIN", "MEMBER"]).default("MEMBER"),
+  role: z.enum(["ADMIN", "MEMBER"]),
 });
 
 type InviteFormData = z.infer<typeof inviteSchema>;
@@ -97,9 +97,7 @@ export function InviteMemberForm() {
         </select>
       </div>
 
-      {success && (
-        <p className="text-sm text-green-600">החבר הוזמן בהצלחה!</p>
-      )}
+      {success && <p className="text-sm text-green-600">החבר הוזמן בהצלחה!</p>}
 
       <Button type="submit" disabled={submitting}>
         {submitting ? "מזמין..." : "הזמן חבר"}

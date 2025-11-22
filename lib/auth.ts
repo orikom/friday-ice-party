@@ -1,4 +1,3 @@
-import { NextAuthOptions } from "next-auth";
 import EmailProvider from "next-auth/providers/email";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "./prisma";
@@ -24,7 +23,7 @@ const getEmailServer = () => {
   };
 };
 
-export const authOptions: NextAuthOptions = {
+export const authOptions = {
   adapter: PrismaAdapter(prisma) as any,
   providers: [
     EmailProvider({
@@ -39,7 +38,9 @@ export const authOptions: NextAuthOptions = {
         if (!user) {
           // Silently fail - don't send email and don't reveal that the email doesn't exist
           // This prevents email enumeration attacks
-          console.log(`⚠️  Magic link request blocked for non-member: ${identifier}`);
+          console.log(
+            `⚠️  Magic link request blocked for non-member: ${identifier}`
+          );
           return;
         }
 
@@ -75,7 +76,7 @@ export const authOptions: NextAuthOptions = {
     verifyRequest: "/auth/verify",
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: any) {
       if (user) {
         const dbUser = await prisma.user.findUnique({
           where: { email: user.email! },
@@ -86,7 +87,7 @@ export const authOptions: NextAuthOptions = {
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token }: any) {
       if (session.user) {
         session.user.id = (token.id as string) || "";
         session.user.role = (token.role as Role) || Role.MEMBER;
@@ -95,7 +96,7 @@ export const authOptions: NextAuthOptions = {
     },
   },
   session: {
-    strategy: "jwt",
+    strategy: "jwt" as const,
   },
   debug: process.env.NODE_ENV === "development",
 };

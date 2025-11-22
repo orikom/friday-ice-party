@@ -22,12 +22,13 @@ export async function generateQRCodeDataURL(text: string): Promise<string> {
  */
 export async function generateQRCodeBuffer(text: string): Promise<Buffer> {
   try {
-    return await QRCode.toBuffer(text, {
+    const buffer = await QRCode.toBuffer(text, {
       errorCorrectionLevel: "M",
-      type: "image/png",
+      type: "png",
       width: 300,
       margin: 1,
     });
+    return Buffer.from(buffer);
   } catch (error) {
     console.error("Failed to generate QR code:", error);
     throw new Error("Failed to generate QR code");
