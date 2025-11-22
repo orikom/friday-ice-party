@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { ReferralsList } from "@/components/ReferralsList";
 
 async function getReferrals() {
-  return await prisma.referral.findMany({
+  const referrals = await prisma.referral.findMany({
     include: {
       referrer: {
         select: {
@@ -30,6 +30,13 @@ async function getReferrals() {
     },
     orderBy: { createdAt: "desc" },
   });
+
+  // Convert Date objects to ISO strings for client component
+  return referrals.map((referral) => ({
+    ...referral,
+    createdAt: referral.createdAt.toISOString(),
+    reviewedAt: referral.reviewedAt?.toISOString() || null,
+  }));
 }
 
 export default async function AdminReferralsPage() {
@@ -44,9 +51,7 @@ export default async function AdminReferralsPage() {
     <div className="container mx-auto px-4 py-8 max-w-6xl">
       <div className="mb-8">
         <h1 className="text-4xl font-bold mb-2">הפניות חברים</h1>
-        <p className="text-gray-600">
-          סקור ונהל הפניות חברים מהקהילה
-        </p>
+        <p className="text-gray-600">סקור ונהל הפניות חברים מהקהילה</p>
       </div>
 
       {/* Stats */}
