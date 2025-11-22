@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireAdmin } from "@/lib/auth-helpers";
+import { requireAuth } from "@/lib/auth-helpers";
 import { generateShortCode } from "@/lib/shortlink";
 import { getWhatsAppAdapter } from "@/lib/messaging/WhatsAppAdapter";
 import { getStorageAdapter } from "@/lib/storage/StorageAdapter";
@@ -19,7 +19,8 @@ const createEventSchema = z.object({
 
 export async function POST(req: NextRequest) {
   try {
-    const admin = await requireAdmin();
+    // Allow all authenticated members to create events
+    const user = await requireAuth();
 
     const body = await req.json();
 
@@ -58,7 +59,7 @@ export async function POST(req: NextRequest) {
         startsAt: startsAtDate,
         endsAt: endsAtDate,
         location: data.location,
-        createdById: admin.id,
+        createdById: user.id,
         shortCode,
         targets: data.targetGroupIds
           ? {

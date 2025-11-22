@@ -55,8 +55,17 @@ export default async function RootLayout({
                 <Link href="/members" className="text-sm hover:text-blue-600">
                   חברים
                 </Link>
+                <Link href="/business" className="text-sm hover:text-blue-600">
+                  עסקים
+                </Link>
                 {user ? (
                   <>
+                    <Link
+                      href="/gallery"
+                      className="text-sm hover:text-blue-600"
+                    >
+                      גלריה
+                    </Link>
                     <Link
                       href="/referrals/new"
                       className="text-sm hover:text-blue-600"

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   Card,
   CardContent,
@@ -36,6 +37,7 @@ interface Member {
 }
 
 export default function MembersPage() {
+  const { data: session } = useSession();
   const [members, setMembers] = useState<Member[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
@@ -147,11 +149,24 @@ export default function MembersPage() {
                 {member.city && (
                   <p className="text-sm text-gray-600 mb-2">📍 {member.city}</p>
                 )}
-                {member.description && (
+                {/* Show description only to authenticated members */}
+                {session?.user && member.description && (
                   <p className="text-sm text-gray-600 line-clamp-2">
                     {member.description}
                   </p>
                 )}
+                {!session?.user && (
+                  <p className="text-xs text-gray-400 mt-2">
+                    התחבר כדי לראות מידע נוסף
+                  </p>
+                )}
+              </CardContent>
+              <CardContent className="pt-0">
+                <Link href={`/members/${member.id}`} className="w-full">
+                  <Button variant="outline" className="w-full" size="sm">
+                    צפה בפרופיל
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
           ))}
@@ -165,6 +180,7 @@ function MemberDropdown({ member }: { member: Member }) {
   const { data: session } = useSession();
   const router = useRouter();
   const isOwnProfile = session?.user?.id === member.id;
+  const isAuthenticated = !!session?.user;
 
   return (
     <DropdownMenu>
@@ -184,7 +200,8 @@ function MemberDropdown({ member }: { member: Member }) {
           {member.occupation && (
             <div className="text-sm text-gray-600">💼 {member.occupation}</div>
           )}
-          {member.description && (
+          {/* Show full description only to authenticated members */}
+          {isAuthenticated && member.description && (
             <div className="text-sm text-gray-600 mt-2">
               {member.description}
             </div>
@@ -199,39 +216,42 @@ function MemberDropdown({ member }: { member: Member }) {
               <DropdownMenuSeparator />
             </>
           )}
-          <div className="flex gap-2 pt-2 border-t">
-            {member.phone && (
-              <a
-                href={`tel:${member.phone}`}
-                className="flex items-center gap-1 text-sm text-blue-600 hover:underline"
-              >
-                <Phone className="h-4 w-4" />
-                התקשר
-              </a>
-            )}
-            {member.instagramUrl && (
-              <a
-                href={member.instagramUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1 text-sm text-blue-600 hover:underline"
-              >
-                <Instagram className="h-4 w-4" />
-                אינסטגרם
-              </a>
-            )}
-            {member.linkedinUrl && (
-              <a
-                href={member.linkedinUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1 text-sm text-blue-600 hover:underline"
-              >
-                <Linkedin className="h-4 w-4" />
-                לינקדאין
-              </a>
-            )}
-          </div>
+          {/* Show social links only to authenticated members */}
+          {isAuthenticated && (
+            <div className="flex gap-2 pt-2 border-t">
+              {member.phone && (
+                <a
+                  href={`tel:${member.phone}`}
+                  className="flex items-center gap-1 text-sm text-blue-600 hover:underline"
+                >
+                  <Phone className="h-4 w-4" />
+                  התקשר
+                </a>
+              )}
+              {member.instagramUrl && (
+                <a
+                  href={member.instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 text-sm text-blue-600 hover:underline"
+                >
+                  <Instagram className="h-4 w-4" />
+                  אינסטגרם
+                </a>
+              )}
+              {member.linkedinUrl && (
+                <a
+                  href={member.linkedinUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 text-sm text-blue-600 hover:underline"
+                >
+                  <Linkedin className="h-4 w-4" />
+                  לינקדאין
+                </a>
+              )}
+            </div>
+          )}
         </div>
       </DropdownMenuContent>
     </DropdownMenu>

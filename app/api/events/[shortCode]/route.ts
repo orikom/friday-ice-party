@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireAdmin } from "@/lib/auth-helpers";
+import { requireAuth, getSessionUser } from "@/lib/auth-helpers";
 import { z } from "zod";
 
 const updateEventSchema = z.object({
@@ -19,8 +19,26 @@ export async function PUT(
   { params }: { params: Promise<{ shortCode: string }> }
 ) {
   try {
-    const admin = await requireAdmin();
+    const user = await requireAuth();
     const { shortCode } = await params;
+
+    // Check if event exists and user is creator or admin
+    const existingEvent = await prisma.event.findUnique({
+      where: { shortCode },
+      select: { createdById: true },
+    });
+
+    if (!existingEvent) {
+      return NextResponse.json({ error: "Event not found" }, { status: 404 });
+    }
+
+    // Only creator or admin can edit
+    if (existingEvent.createdById !== user.id && user.role !== "ADMIN") {
+      return NextResponse.json(
+        { error: "Unauthorized - only event creator or admin can edit" },
+        { status: 403 }
+      );
+    }
 
     const body = await req.json();
 
@@ -32,15 +50,6 @@ export async function PUT(
     };
 
     const data = updateEventSchema.parse(cleanedBody);
-
-    // Check if event exists
-    const existingEvent = await prisma.event.findUnique({
-      where: { shortCode },
-    });
-
-    if (!existingEvent) {
-      return NextResponse.json({ error: "Event not found" }, { status: 404 });
-    }
 
     // Convert datetime strings to Date objects
     const startsAtDate = data.startsAt ? new Date(data.startsAt) : null;
@@ -108,16 +117,25 @@ export async function DELETE(
   { params }: { params: Promise<{ shortCode: string }> }
 ) {
   try {
-    await requireAdmin();
+    const user = await requireAuth();
     const { shortCode } = await params;
 
     // Check if event exists
     const existingEvent = await prisma.event.findUnique({
       where: { shortCode },
+      select: { createdById: true },
     });
 
     if (!existingEvent) {
       return NextResponse.json({ error: "Event not found" }, { status: 404 });
+    }
+
+    // Only creator or admin can delete
+    if (existingEvent.createdById !== user.id && user.role !== "ADMIN") {
+      return NextResponse.json(
+        { error: "Unauthorized - only event creator or admin can delete" },
+        { status: 403 }
+      );
     }
 
     // Delete event (cascade will handle related records)

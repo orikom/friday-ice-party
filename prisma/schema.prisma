@@ -44,6 +44,8 @@ model User {
   sessions          Session[]
   referralsMade     Referral[]    @relation("Referrer")
   referralsReviewed Referral[]    @relation("ReviewedBy")
+  businesses        Business[]
+  galleryItems      GalleryItem[]
 }
 
 model Group {
@@ -86,6 +88,7 @@ model Event {
   createdBy User               @relation("EventCreator", fields: [createdById], references: [id])
   joins     EventJoin[]
   targets   EventTargetGroup[]
+  galleryItems GalleryItem[]
 
   @@index([shortCode])
   @@index([category])
@@ -200,4 +203,49 @@ model Referral {
   @@index([referrerId])
   @@index([status])
   @@index([createdAt])
+}
+
+model Business {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  category    String   // e.g., "restaurant", "fitness", "beauty", "tech", etc.
+  imageUrl    String?
+  phone       String?
+  email       String?
+  website     String?
+  address     String?
+  city        String?
+  instagramUrl String?
+  linkedinUrl  String?
+  isRecommended Boolean @default(false)
+  ownerId     String   // User who owns/manages this business
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@index([category])
+  @@index([ownerId])
+  @@index([isRecommended])
+}
+
+model GalleryItem {
+  id          String   @id @default(cuid())
+  title       String?
+  description String?
+  imageUrl    String   // URL to image or video thumbnail
+  videoUrl    String?  // URL to video if it's a video
+  eventId     String?  // Optional - link to event
+  category    String?  // Optional category
+  uploadedById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  event      Event? @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  uploadedBy User  @relation(fields: [uploadedById], references: [id], onDelete: Cascade)
+
+  @@index([eventId])
+  @@index([category])
+  @@index([uploadedById])
 }

@@ -6,10 +6,19 @@ export async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
 
   // Public routes that don't require authentication
-  const publicRoutes = ["/auth/signin", "/auth/verify", "/api/auth"];
+  const publicRoutes = [
+    "/auth/signin",
+    "/auth/verify",
+    "/api/auth",
+    "/",
+    "/members",
+    "/events",
+    "/business",
+    "/gallery",
+  ];
 
-  const isPublicRoute = publicRoutes.some((route) =>
-    pathname.startsWith(route)
+  const isPublicRoute = publicRoutes.some(
+    (route) => pathname === route || pathname.startsWith(route + "/")
   );
 
   // Allow public routes and API routes (API routes handle their own auth)
@@ -17,13 +26,19 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // Check authentication for all other routes
+  // Check authentication for protected routes
   const token = await getToken({
     req,
     secret: process.env.NEXTAUTH_SECRET,
   });
 
-  if (!token) {
+  // Protected routes that require authentication
+  const protectedRoutes = ["/profile", "/referrals", "/admin"];
+  const isProtectedRoute = protectedRoutes.some((route) =>
+    pathname.startsWith(route)
+  );
+
+  if (isProtectedRoute && !token) {
     // Redirect to sign in with callback URL
     const signInUrl = new URL("/auth/signin", req.url);
     signInUrl.searchParams.set("callbackUrl", pathname);

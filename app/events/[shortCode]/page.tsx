@@ -137,8 +137,8 @@ export default async function EventPage({
         <Link href="/" className="text-blue-600 hover:underline inline-block">
           ← חזור לאירועים
         </Link>
-        {user?.role === "ADMIN" && (
-          <Link href={`/admin/events/${shortCode}/edit`}>
+        {(user?.role === "ADMIN" || user?.id === event.createdBy.id) && (
+          <Link href={`/events/${shortCode}/edit`}>
             <Button variant="outline">ערוך אירוע</Button>
           </Link>
         )}
@@ -172,98 +172,129 @@ export default async function EventPage({
           <div>
             <h3 className="font-semibold mb-2">תיאור</h3>
             <p className="text-gray-700 whitespace-pre-wrap">
-              {event.description}
+              {user
+                ? event.description
+                : event.description?.substring(0, 200) + "..."}
             </p>
+            {!user && (
+              <p className="text-xs text-gray-400 mt-2">
+                התחבר כדי לראות את התיאור המלא
+              </p>
+            )}
           </div>
 
           {event.location && (
             <div>
               <h3 className="font-semibold mb-2">מיקום</h3>
-              <p className="text-gray-700">📍 {event.location}</p>
+              <p className="text-gray-700">
+                📍 {user ? event.location : "מיקום כללי"}
+              </p>
+              {!user && (
+                <p className="text-xs text-gray-400 mt-1">
+                  התחבר כדי לראות את המיקום המדויק
+                </p>
+              )}
             </div>
           )}
 
-          <div>
-            <h3 className="font-semibold mb-2">מאורגן על ידי</h3>
-            <div className="flex items-center gap-2">
-              {event.createdBy.imageUrl ? (
-                <Image
-                  src={event.createdBy.imageUrl}
-                  alt={event.createdBy.name || "מארגן"}
-                  width={32}
-                  height={32}
-                  className="rounded-full"
-                />
-              ) : (
-                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                  <span className="text-gray-500 text-xs">
-                    {(event.createdBy.name || "מ")[0].toUpperCase()}
-                  </span>
+          {user && (
+            <>
+              <div>
+                <h3 className="font-semibold mb-2">מאורגן על ידי</h3>
+                <div className="flex items-center gap-2">
+                  {event.createdBy.imageUrl ? (
+                    <Image
+                      src={event.createdBy.imageUrl}
+                      alt={event.createdBy.name || "מארגן"}
+                      width={32}
+                      height={32}
+                      className="rounded-full"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                      <span className="text-gray-500 text-xs">
+                        {(event.createdBy.name || "מ")[0].toUpperCase()}
+                      </span>
+                    </div>
+                  )}
+                  <span>{event.createdBy.name || "מארגן"}</span>
                 </div>
-              )}
-              <span>{event.createdBy.name || "מארגן"}</span>
-            </div>
-          </div>
+              </div>
 
-          <div>
-            <h3 className="font-semibold mb-2">
-              משתתפים ({event.attendeeCount})
-            </h3>
-            {event.attendeeCount === 0 ? (
-              <p className="text-gray-500 text-sm">אין משתתפים עדיין</p>
-            ) : (
-              <div className="flex flex-wrap gap-2">
-                {event.joins.slice(0, 10).map((join) => (
-                  <div key={join.id} className="flex items-center gap-2">
-                    {join.user.imageUrl ? (
-                      <Image
-                        src={join.user.imageUrl}
-                        alt={join.user.name || "משתתף"}
-                        width={24}
-                        height={24}
-                        className="rounded-full"
-                      />
-                    ) : (
-                      <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center">
-                        <span className="text-gray-500 text-xs">
-                          {(join.user.name || "מ")[0].toUpperCase()}
+              <div>
+                <h3 className="font-semibold mb-2">
+                  משתתפים ({event.attendeeCount})
+                </h3>
+                {event.attendeeCount === 0 ? (
+                  <p className="text-gray-500 text-sm">אין משתתפים עדיין</p>
+                ) : (
+                  <div className="flex flex-wrap gap-2">
+                    {event.joins.slice(0, 10).map((join) => (
+                      <div key={join.id} className="flex items-center gap-2">
+                        {join.user.imageUrl ? (
+                          <Image
+                            src={join.user.imageUrl}
+                            alt={join.user.name || "משתתף"}
+                            width={24}
+                            height={24}
+                            className="rounded-full"
+                          />
+                        ) : (
+                          <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center">
+                            <span className="text-gray-500 text-xs">
+                              {(join.user.name || "מ")[0].toUpperCase()}
+                            </span>
+                          </div>
+                        )}
+                        <span className="text-sm">
+                          {join.user.name || "משתתף"}
                         </span>
                       </div>
+                    ))}
+                    {event.attendeeCount > 10 && (
+                      <span className="text-sm text-gray-500">
+                        +{event.attendeeCount - 10} נוספים
+                      </span>
                     )}
-                    <span className="text-sm">{join.user.name || "משתתף"}</span>
                   </div>
-                ))}
-                {event.attendeeCount > 10 && (
-                  <span className="text-sm text-gray-500">
-                    +{event.attendeeCount - 10} נוספים
-                  </span>
                 )}
               </div>
-            )}
-          </div>
+            </>
+          )}
         </CardContent>
         <CardContent>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <div className={userJoin ? "w-full" : "flex-1"}>
-              <JoinEventButton
-                eventId={event.id}
-                shortCode={event.shortCode}
-                userJoin={userJoin}
-              />
+          {user ? (
+            <div className="flex flex-col sm:flex-row gap-3">
+              <div className={userJoin ? "w-full" : "flex-1"}>
+                <JoinEventButton
+                  eventId={event.id}
+                  shortCode={event.shortCode}
+                  userJoin={userJoin}
+                />
+              </div>
+              <div className={userJoin ? "w-full sm:w-auto" : "flex-1"}>
+                <WhatsAppShareButton
+                  title={event.title}
+                  description={event.description}
+                  shortCode={event.shortCode}
+                  category={event.category}
+                  imageUrl={event.imageUrl}
+                  location={event.location}
+                  startsAt={event.startsAt}
+                  endsAt={event.endsAt}
+                />
+              </div>
             </div>
-            <div className={userJoin ? "w-full sm:w-auto" : "flex-1"}>
-              <WhatsAppShareButton
-                title={event.title}
-                description={event.description}
-                shortCode={event.shortCode}
-                category={event.category}
-                imageUrl={event.imageUrl}
-                location={event.location}
-                startsAt={event.startsAt}
-                endsAt={event.endsAt}
-              />
+          ) : (
+            <div className="text-center py-4 border-t">
+              <p className="text-sm text-gray-600 mb-4">
+                התחבר כדי להצטרף לאירוע ולראות מידע נוסף
+              </p>
+              <Link href="/auth/signin">
+                <Button>התחבר</Button>
+              </Link>
             </div>
-          </div>
+          )}
         </CardContent>
       </Card>
     </div>

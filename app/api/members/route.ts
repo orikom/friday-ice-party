@@ -1,10 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getToken } from "next-auth/jwt";
 
 export async function GET(req: NextRequest) {
   try {
     const searchParams = req.nextUrl.searchParams;
     const query = searchParams.get("query") || "";
+
+    // Check if user is authenticated
+    const token = await getToken({
+      req,
+      secret: process.env.NEXTAUTH_SECRET,
+    });
+    const isAuthenticated = !!token;
 
     const members = await prisma.user.findMany({
       where: {
@@ -24,10 +32,11 @@ export async function GET(req: NextRequest) {
         imageUrl: true,
         city: true,
         occupation: true,
-        description: true,
-        instagramUrl: true,
-        linkedinUrl: true,
-        phone: true,
+        // Show description only to authenticated users
+        description: isAuthenticated,
+        instagramUrl: isAuthenticated,
+        linkedinUrl: isAuthenticated,
+        phone: isAuthenticated,
       },
       orderBy: { name: "asc" },
     });
@@ -41,3 +50,4 @@ export async function GET(req: NextRequest) {
     );
   }
 }
+
