@@ -28,15 +28,15 @@ export default async function AdminDashboard() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">Admin Dashboard</h1>
-        <p className="text-gray-600">Manage events, members, and groups</p>
+        <h1 className="text-4xl font-bold mb-2">לוח בקרה</h1>
+        <p className="text-gray-600">נהל אירועים, חברים וקבוצות</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <Card>
           <CardHeader>
             <CardTitle className="text-sm font-medium text-gray-600">
-              Events
+              אירועים
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -46,7 +46,7 @@ export default async function AdminDashboard() {
         <Card>
           <CardHeader>
             <CardTitle className="text-sm font-medium text-gray-600">
-              Members
+              חברים
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -56,7 +56,7 @@ export default async function AdminDashboard() {
         <Card>
           <CardHeader>
             <CardTitle className="text-sm font-medium text-gray-600">
-              Groups
+              קבוצות
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -66,7 +66,7 @@ export default async function AdminDashboard() {
         <Card>
           <CardHeader>
             <CardTitle className="text-sm font-medium text-gray-600">
-              Total Joins
+              הצטרפויות
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -78,55 +78,55 @@ export default async function AdminDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>Events</CardTitle>
-            <CardDescription>Create and manage events</CardDescription>
+            <CardTitle>אירועים</CardTitle>
+            <CardDescription>צור ונהל אירועים</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
             <Link href="/admin/events/new">
-              <Button className="w-full">Create Event</Button>
+              <Button className="w-full">צור אירוע</Button>
             </Link>
             <Link href="/admin/events">
               <Button className="w-full" variant="outline">
-                Manage Events
+                נהל אירועים
               </Button>
             </Link>
           </CardContent>
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Members</CardTitle>
-            <CardDescription>Invite and manage members</CardDescription>
+            <CardTitle>חברים</CardTitle>
+            <CardDescription>הזמן ונהל חברים</CardDescription>
           </CardHeader>
           <CardContent>
             <Link href="/admin/members">
               <Button className="w-full" variant="outline">
-                Manage Members
+                נהל חברים
               </Button>
             </Link>
           </CardContent>
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Groups</CardTitle>
-            <CardDescription>Manage WhatsApp groups</CardDescription>
+            <CardTitle>קבוצות</CardTitle>
+            <CardDescription>נהל קבוצות וואטסאפ</CardDescription>
           </CardHeader>
           <CardContent>
             <Link href="/admin/groups">
               <Button className="w-full" variant="outline">
-                Manage Groups
+                נהל קבוצות
               </Button>
             </Link>
           </CardContent>
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Referrals</CardTitle>
-            <CardDescription>Review member referrals</CardDescription>
+            <CardTitle>הפניות</CardTitle>
+            <CardDescription>סקור הפניות חברים</CardDescription>
           </CardHeader>
           <CardContent>
             <Link href="/admin/referrals">
               <Button className="w-full" variant="outline">
-                Manage Referrals
+                נהל הפניות
               </Button>
             </Link>
           </CardContent>

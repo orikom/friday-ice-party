@@ -37,7 +37,7 @@ export default async function ProfilePage() {
   if (!profile) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <p>Profile not found</p>
+        <p>פרופיל לא נמצא</p>
       </div>
     );
   }
@@ -45,8 +45,8 @@ export default async function ProfilePage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">My Profile</h1>
-        <p className="text-gray-600">Manage your profile information</p>
+        <h1 className="text-4xl font-bold mb-2">הפרופיל שלי</h1>
+        <p className="text-gray-600">נהל את פרטי הפרופיל שלך</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -82,24 +82,24 @@ export default async function ProfilePage() {
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="text-sm">
-              <div className="font-semibold mb-1">Email</div>
+              <div className="font-semibold mb-1">אימייל</div>
               <div className="text-gray-600">{profile.email}</div>
             </div>
             {profile.city && (
               <div className="text-sm">
-                <div className="font-semibold mb-1">📍 Location</div>
+                <div className="font-semibold mb-1">📍 מיקום</div>
                 <div className="text-gray-600">{profile.city}</div>
               </div>
             )}
             {profile.phone && (
               <div className="text-sm">
-                <div className="font-semibold mb-1">📞 Phone</div>
+                <div className="font-semibold mb-1">📞 טלפון</div>
                 <div className="text-gray-600">{profile.phone}</div>
               </div>
             )}
             {profile.description && (
               <div className="text-sm">
-                <div className="font-semibold mb-1">About</div>
+                <div className="font-semibold mb-1">אודות</div>
                 <div className="text-gray-600">{profile.description}</div>
               </div>
             )}
@@ -112,7 +112,7 @@ export default async function ProfilePage() {
                   className="flex items-center gap-1 text-sm text-blue-600 hover:underline"
                 >
                   <Instagram className="h-4 w-4" />
-                  Instagram
+                  אינסטגרם
                 </a>
               )}
               {profile.linkedinUrl && (
@@ -123,7 +123,7 @@ export default async function ProfilePage() {
                   className="flex items-center gap-1 text-sm text-blue-600 hover:underline"
                 >
                   <Linkedin className="h-4 w-4" />
-                  LinkedIn
+                  לינקדאין
                 </a>
               )}
             </div>
@@ -133,8 +133,8 @@ export default async function ProfilePage() {
         {/* Edit Form */}
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>Edit Profile</CardTitle>
-            <CardDescription>Update your profile information</CardDescription>
+            <CardTitle>ערוך פרופיל</CardTitle>
+            <CardDescription>עדכן את פרטי הפרופיל שלך</CardDescription>
           </CardHeader>
           <CardContent>
             <ProfileForm profile={profile} />

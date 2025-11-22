@@ -53,17 +53,13 @@ export default async function HomePage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">
-          Welcome to Friday Pool Party
-        </h1>
-        <p className="text-gray-600">
-          Discover events and connect with the community
-        </p>
+        <h1 className="text-4xl font-bold mb-2">ברוכים הבאים לקהילת הקרח</h1>
+        <p className="text-gray-600">גלה אירועים והתחבר לקהילה</p>
       </div>
 
       {events.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-gray-500">No events yet. Check back soon!</p>
+          <p className="text-gray-500">אין אירועים עדיין. נסה שוב בקרוב!</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -102,12 +98,12 @@ export default async function HomePage() {
                 )}
                 <p className="text-xs text-gray-500 mt-2">
                   👥 {event.attendeeCount}{" "}
-                  {event.attendeeCount === 1 ? "attendee" : "attendees"}
+                  {event.attendeeCount === 1 ? "משתתף" : "משתתפים"}
                 </p>
               </CardContent>
               <CardFooter>
                 <Link href={`/events/${event.shortCode}`} className="w-full">
-                  <Button className="w-full">View Event</Button>
+                  <Button className="w-full">צפה באירוע</Button>
                 </Link>
               </CardFooter>
             </Card>

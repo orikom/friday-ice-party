@@ -41,7 +41,7 @@ export function JoinEventButton({
 
       if (!response.ok) {
         const data = await response.json();
-        alert(data.error || "Failed to join event");
+        alert(data.error || "נכשל בהצטרפות לאירוע");
         return;
       }
 
@@ -52,7 +52,7 @@ export function JoinEventButton({
       router.refresh();
     } catch (error) {
       console.error("Failed to join event:", error);
-      alert("Failed to join event");
+      alert("נכשל בהצטרפות לאירוע");
     } finally {
       setLoading(false);
     }
@@ -63,14 +63,14 @@ export function JoinEventButton({
       <>
         <div className="space-y-4">
           <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-            <p className="text-green-800 font-semibold">✓ You're joined!</p>
+            <p className="text-green-800 font-semibold">✓ הצטרפת!</p>
             {userJoin.qrCode && (
               <Button
                 variant="outline"
                 onClick={() => setShowQR(true)}
                 className="mt-2"
               >
-                View QR Code
+                צפה בקוד QR
               </Button>
             )}
           </div>
@@ -78,9 +78,9 @@ export function JoinEventButton({
         <Dialog open={showQR} onOpenChange={setShowQR}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Your Event QR Code</DialogTitle>
+              <DialogTitle>קוד QR שלך לאירוע</DialogTitle>
               <DialogDescription>
-                Show this QR code at the event entrance
+                הצג את קוד ה-QR הזה בכניסה לאירוע
               </DialogDescription>
             </DialogHeader>
             {userJoin.qrCode && (
@@ -107,7 +107,7 @@ export function JoinEventButton({
       className="w-full"
       size="lg"
     >
-      {loading ? "Joining..." : "Join Event"}
+      {loading ? "מצטרף..." : "הצטרף לאירוע"}
     </Button>
   );
 }

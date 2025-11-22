@@ -43,13 +43,13 @@ export default async function AdminEventsPage() {
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-4xl font-bold mb-2">Manage Events</h1>
+            <h1 className="text-4xl font-bold mb-2">נהל אירועים</h1>
             <p className="text-gray-600">
-              View and edit all events in the system
+              צפה וערוך את כל האירועים במערכת
             </p>
           </div>
           <Link href="/admin/events/new">
-            <Button>Create New Event</Button>
+            <Button>צור אירוע חדש</Button>
           </Link>
         </div>
       </div>
@@ -57,9 +57,9 @@ export default async function AdminEventsPage() {
       {events.length === 0 ? (
         <Card>
           <CardContent className="py-12 text-center">
-            <p className="text-gray-500 mb-4">No events yet</p>
+            <p className="text-gray-500 mb-4">אין אירועים עדיין</p>
             <Link href="/admin/events/new">
-              <Button>Create Your First Event</Button>
+              <Button>צור את האירוע הראשון שלך</Button>
             </Link>
           </CardContent>
         </Card>

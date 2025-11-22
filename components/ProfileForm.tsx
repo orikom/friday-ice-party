@@ -88,7 +88,7 @@ export function ProfileForm({ profile }: ProfileFormProps) {
       setValue("imageUrl", data.url);
     } catch (error) {
       console.error("Upload error:", error);
-      alert("Failed to upload image");
+      alert("נכשל בהעלאת התמונה");
     } finally {
       setUploading(false);
     }
@@ -105,15 +105,15 @@ export function ProfileForm({ profile }: ProfileFormProps) {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || "Failed to update profile");
+        throw new Error(error.error || "נכשל בעדכון הפרופיל");
       }
 
       router.refresh();
-      alert("Profile updated successfully!");
+      alert("הפרופיל עודכן בהצלחה!");
     } catch (error) {
       console.error("Update profile error:", error);
       alert(
-        error instanceof Error ? error.message : "Failed to update profile"
+        error instanceof Error ? error.message : "נכשל בעדכון הפרופיל"
       );
     } finally {
       setSubmitting(false);
@@ -123,7 +123,7 @@ export function ProfileForm({ profile }: ProfileFormProps) {
   const handleDeleteAccount = async () => {
     if (
       !confirm(
-        "Are you sure you want to delete your account? This action cannot be undone."
+        "האם אתה בטוח שברצונך למחוק את החשבון שלך? פעולה זו לא ניתנת לביטול."
       )
     ) {
       return;
@@ -137,7 +137,7 @@ export function ProfileForm({ profile }: ProfileFormProps) {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || "Failed to delete account");
+        throw new Error(error.error || "נכשל במחיקת החשבון");
       }
 
       // Redirect to sign out page or home
@@ -145,7 +145,7 @@ export function ProfileForm({ profile }: ProfileFormProps) {
     } catch (error) {
       console.error("Delete account error:", error);
       alert(
-        error instanceof Error ? error.message : "Failed to delete account"
+        error instanceof Error ? error.message : "נכשל במחיקת החשבון"
       );
       setDeleting(false);
     }
@@ -155,7 +155,7 @@ export function ProfileForm({ profile }: ProfileFormProps) {
     <>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div>
-          <Label htmlFor="image">Profile Image</Label>
+          <Label htmlFor="image">תמונת פרופיל</Label>
           <Input
             id="image"
             type="file"
@@ -164,66 +164,66 @@ export function ProfileForm({ profile }: ProfileFormProps) {
             disabled={uploading}
           />
           {watch("imageUrl") && (
-            <p className="text-sm text-green-600 mt-1">Image uploaded</p>
+            <p className="text-sm text-green-600 mt-1">תמונה הועלתה</p>
           )}
           {profile.imageUrl && !watch("imageUrl") && (
             <p className="text-sm text-gray-500 mt-1">
-              Current image: {profile.imageUrl}
+              תמונה נוכחית: {profile.imageUrl}
             </p>
           )}
         </div>
 
         <div>
-          <Label htmlFor="name">Name</Label>
+          <Label htmlFor="name">שם</Label>
           <Input id="name" {...register("name")} />
         </div>
 
         <div>
-          <Label htmlFor="phone">Phone</Label>
+          <Label htmlFor="phone">טלפון</Label>
           <Input id="phone" {...register("phone")} />
         </div>
 
         <div>
-          <Label htmlFor="city">City</Label>
+          <Label htmlFor="city">עיר</Label>
           <Input id="city" {...register("city")} />
         </div>
 
         <div>
-          <Label htmlFor="occupation">Occupation</Label>
+          <Label htmlFor="occupation">מקצוע</Label>
           <Input id="occupation" {...register("occupation")} />
         </div>
 
         <div>
-          <Label htmlFor="description">Description / Bio</Label>
+          <Label htmlFor="description">תיאור / ביוגרפיה</Label>
           <Textarea
             id="description"
             {...register("description")}
             rows={4}
-            placeholder="Tell us about yourself..."
+            placeholder="ספר לנו על עצמך..."
           />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="instagramUrl">Instagram URL</Label>
+            <Label htmlFor="instagramUrl">כתובת Instagram</Label>
             <Input id="instagramUrl" {...register("instagramUrl")} />
           </div>
           <div>
-            <Label htmlFor="linkedinUrl">LinkedIn URL</Label>
+            <Label htmlFor="linkedinUrl">כתובת LinkedIn</Label>
             <Input id="linkedinUrl" {...register("linkedinUrl")} />
           </div>
         </div>
 
         <div className="flex gap-4 pt-4 border-t">
           <Button type="submit" disabled={submitting}>
-            {submitting ? "Saving..." : "Save Changes"}
+            {submitting ? "שומר..." : "שמור שינויים"}
           </Button>
           <Button
             type="button"
             variant="destructive"
             onClick={() => setDeleteDialogOpen(true)}
           >
-            Delete Account
+            מחק חשבון
           </Button>
         </div>
       </form>
@@ -231,11 +231,9 @@ export function ProfileForm({ profile }: ProfileFormProps) {
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete Account</DialogTitle>
+            <DialogTitle>מחק חשבון</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete your account? This action cannot
-              be undone. All your data, event joins, and group memberships will
-              be permanently deleted.
+              האם אתה בטוח שברצונך למחוק את החשבון שלך? פעולה זו לא ניתנת לביטול. כל הנתונים שלך, הצטרפויות לאירועים וחברויות בקבוצות יימחקו לצמיתות.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -245,7 +243,7 @@ export function ProfileForm({ profile }: ProfileFormProps) {
               onClick={() => setDeleteDialogOpen(false)}
               disabled={deleting}
             >
-              Cancel
+              ביטול
             </Button>
             <Button
               type="button"
@@ -253,7 +251,7 @@ export function ProfileForm({ profile }: ProfileFormProps) {
               onClick={handleDeleteAccount}
               disabled={deleting}
             >
-              {deleting ? "Deleting..." : "Delete Account"}
+              {deleting ? "מוחק..." : "מחק חשבון"}
             </Button>
           </DialogFooter>
         </DialogContent>

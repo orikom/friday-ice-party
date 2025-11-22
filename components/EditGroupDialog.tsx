@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/dialog";
 
 const groupSchema = z.object({
-  name: z.string().min(1, "Name is required"),
+  name: z.string().min(1, "שם נדרש"),
   waId: z.string().optional(),
 });
 
@@ -66,7 +66,7 @@ export function EditGroupDialog({
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || "Failed to update group");
+        throw new Error(error.error || "נכשל בעדכון הקבוצה");
       }
 
       onOpenChange(false);
@@ -83,12 +83,12 @@ export function EditGroupDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Group</DialogTitle>
-          <DialogDescription>Update group details</DialogDescription>
+          <DialogTitle>ערוך קבוצה</DialogTitle>
+          <DialogDescription>עדכן פרטי קבוצה</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <Label htmlFor="name">Group Name *</Label>
+            <Label htmlFor="name">שם הקבוצה *</Label>
             <Input id="name" {...register("name")} />
             {errors.name && (
               <p className="text-sm text-red-600 mt-1">{errors.name.message}</p>
@@ -96,11 +96,11 @@ export function EditGroupDialog({
           </div>
 
           <div>
-            <Label htmlFor="waId">WhatsApp Group ID</Label>
+            <Label htmlFor="waId">מזהה קבוצת וואטסאפ</Label>
             <Input
               id="waId"
               {...register("waId")}
-              placeholder="Optional - external WhatsApp group ID"
+              placeholder="אופציונלי - מזהה קבוצת וואטסאפ חיצוני"
             />
           </div>
 
@@ -110,10 +110,10 @@ export function EditGroupDialog({
               variant="outline"
               onClick={() => onOpenChange(false)}
             >
-              Cancel
+              ביטול
             </Button>
             <Button type="submit" disabled={submitting}>
-              {submitting ? "Updating..." : "Update"}
+              {submitting ? "מעדכן..." : "עדכן"}
             </Button>
           </DialogFooter>
         </form>
@@ -144,7 +144,7 @@ export function DeleteGroupDialog({
   const handleDelete = async () => {
     if (
       !confirm(
-        `Are you sure you want to delete "${group.name}"? This will remove ${group.memberCount} member(s) and ${group.eventCount} event association(s).`
+        `האם אתה בטוח שברצונך למחוק את "${group.name}"? זה יסיר ${group.memberCount} חבר(ים) ו-${group.eventCount} קשרי אירועים.`
       )
     ) {
       return;
@@ -158,14 +158,14 @@ export function DeleteGroupDialog({
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || "Failed to delete group");
+        throw new Error(error.error || "נכשל במחיקת הקבוצה");
       }
 
       onOpenChange(false);
       router.refresh();
     } catch (error) {
       console.error("Delete group error:", error);
-      alert(error instanceof Error ? error.message : "Failed to delete group");
+      alert(error instanceof Error ? error.message : "נכשל במחיקת הקבוצה");
     } finally {
       setDeleting(false);
     }
@@ -175,10 +175,9 @@ export function DeleteGroupDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete Group</DialogTitle>
+          <DialogTitle>מחק קבוצה</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete &quot;{group.name}&quot;? This
-            action cannot be undone.
+            האם אתה בטוח שברצונך למחוק את &quot;{group.name}&quot;? פעולה זו לא ניתנת לביטול.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
@@ -188,7 +187,7 @@ export function DeleteGroupDialog({
             onClick={() => onOpenChange(false)}
             disabled={deleting}
           >
-            Cancel
+            ביטול
           </Button>
           <Button
             type="button"
@@ -196,7 +195,7 @@ export function DeleteGroupDialog({
             onClick={handleDelete}
             disabled={deleting}
           >
-            {deleting ? "Deleting..." : "Delete"}
+            {deleting ? "מוחק..." : "מחק"}
           </Button>
         </DialogFooter>
       </DialogContent>

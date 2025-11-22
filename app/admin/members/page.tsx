@@ -36,14 +36,14 @@ export default async function AdminMembersPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">Manage Members</h1>
-        <p className="text-gray-600">Invite and manage community members</p>
+        <h1 className="text-4xl font-bold mb-2">נהל חברים</h1>
+        <p className="text-gray-600">הזמן ונהל חברי קהילה</p>
       </div>
 
       <Card className="mb-8">
         <CardHeader>
-          <CardTitle>Invite Member</CardTitle>
-          <CardDescription>Send an invitation to a new member</CardDescription>
+          <CardTitle>הזמן חבר</CardTitle>
+          <CardDescription>שלח הזמנה לחבר חדש</CardDescription>
         </CardHeader>
         <CardContent>
           <InviteMemberForm />
@@ -52,8 +52,8 @@ export default async function AdminMembersPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>All Members</CardTitle>
-          <CardDescription>{members.length} total members</CardDescription>
+          <CardTitle>כל החברים</CardTitle>
+          <CardDescription>{members.length} חברים בסך הכל</CardDescription>
         </CardHeader>
         <CardContent>
           <MembersList members={members} />

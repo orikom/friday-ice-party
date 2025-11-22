@@ -87,8 +87,8 @@ export async function generateMetadata({
       description: event.description,
       type: "website",
       url: eventUrl,
-      siteName: "Friday Pool Party",
-      locale: "en_US",
+      siteName: "FRIDAY POOL PARTY",
+      locale: "he_IL",
       images: imageUrl
         ? [
             {
@@ -135,11 +135,11 @@ export default async function EventPage({
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="flex items-center justify-between mb-4">
         <Link href="/" className="text-blue-600 hover:underline inline-block">
-          ← Back to events
+          ← חזור לאירועים
         </Link>
         {user?.role === "ADMIN" && (
           <Link href={`/admin/events/${shortCode}/edit`}>
-            <Button variant="outline">Edit Event</Button>
+            <Button variant="outline">ערוך אירוע</Button>
           </Link>
         )}
       </div>
@@ -170,7 +170,7 @@ export default async function EventPage({
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <h3 className="font-semibold mb-2">Description</h3>
+            <h3 className="font-semibold mb-2">תיאור</h3>
             <p className="text-gray-700 whitespace-pre-wrap">
               {event.description}
             </p>
@@ -178,18 +178,18 @@ export default async function EventPage({
 
           {event.location && (
             <div>
-              <h3 className="font-semibold mb-2">Location</h3>
+              <h3 className="font-semibold mb-2">מיקום</h3>
               <p className="text-gray-700">📍 {event.location}</p>
             </div>
           )}
 
           <div>
-            <h3 className="font-semibold mb-2">Organized by</h3>
+            <h3 className="font-semibold mb-2">מאורגן על ידי</h3>
             <div className="flex items-center gap-2">
               {event.createdBy.imageUrl ? (
                 <Image
                   src={event.createdBy.imageUrl}
-                  alt={event.createdBy.name || "Organizer"}
+                  alt={event.createdBy.name || "מארגן"}
                   width={32}
                   height={32}
                   className="rounded-full"
@@ -197,20 +197,20 @@ export default async function EventPage({
               ) : (
                 <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
                   <span className="text-gray-500 text-xs">
-                    {(event.createdBy.name || "O")[0].toUpperCase()}
+                    {(event.createdBy.name || "מ")[0].toUpperCase()}
                   </span>
                 </div>
               )}
-              <span>{event.createdBy.name || "Organizer"}</span>
+              <span>{event.createdBy.name || "מארגן"}</span>
             </div>
           </div>
 
           <div>
             <h3 className="font-semibold mb-2">
-              Attendees ({event.attendeeCount})
+              משתתפים ({event.attendeeCount})
             </h3>
             {event.attendeeCount === 0 ? (
-              <p className="text-gray-500 text-sm">No attendees yet</p>
+              <p className="text-gray-500 text-sm">אין משתתפים עדיין</p>
             ) : (
               <div className="flex flex-wrap gap-2">
                 {event.joins.slice(0, 10).map((join) => (
@@ -218,7 +218,7 @@ export default async function EventPage({
                     {join.user.imageUrl ? (
                       <Image
                         src={join.user.imageUrl}
-                        alt={join.user.name || "Attendee"}
+                        alt={join.user.name || "משתתף"}
                         width={24}
                         height={24}
                         className="rounded-full"
@@ -226,18 +226,16 @@ export default async function EventPage({
                     ) : (
                       <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center">
                         <span className="text-gray-500 text-xs">
-                          {(join.user.name || "A")[0].toUpperCase()}
+                          {(join.user.name || "מ")[0].toUpperCase()}
                         </span>
                       </div>
                     )}
-                    <span className="text-sm">
-                      {join.user.name || "Attendee"}
-                    </span>
+                    <span className="text-sm">{join.user.name || "משתתף"}</span>
                   </div>
                 ))}
                 {event.attendeeCount > 10 && (
                   <span className="text-sm text-gray-500">
-                    +{event.attendeeCount - 10} more
+                    +{event.attendeeCount - 10} נוספים
                   </span>
                 )}
               </div>

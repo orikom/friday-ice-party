@@ -108,7 +108,7 @@ export function ReferralsList({ referrals }: ReferralsListProps) {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || "Failed to process referral");
+        throw new Error(error.error || "נכשל בעיבוד ההפניה");
       }
 
       setActionDialogOpen(false);
@@ -116,7 +116,7 @@ export function ReferralsList({ referrals }: ReferralsListProps) {
     } catch (error) {
       console.error("Process referral error:", error);
       alert(
-        error instanceof Error ? error.message : "Failed to process referral"
+        error instanceof Error ? error.message : "נכשל בעיבוד ההפניה"
       );
     } finally {
       setProcessing(false);
@@ -129,21 +129,21 @@ export function ReferralsList({ referrals }: ReferralsListProps) {
         return (
           <Badge variant="outline" className="bg-yellow-50 text-yellow-700">
             <Clock className="h-3 w-3 mr-1" />
-            Pending
+            ממתין
           </Badge>
         );
       case "APPROVED":
         return (
           <Badge variant="outline" className="bg-green-50 text-green-700">
             <CheckCircle2 className="h-3 w-3 mr-1" />
-            Approved
+            אושר
           </Badge>
         );
       case "REJECTED":
         return (
           <Badge variant="outline" className="bg-red-50 text-red-700">
             <XCircle className="h-3 w-3 mr-1" />
-            Rejected
+            נדחה
           </Badge>
         );
       default:
@@ -152,7 +152,7 @@ export function ReferralsList({ referrals }: ReferralsListProps) {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
+    return new Date(dateString).toLocaleDateString("he-IL", {
       year: "numeric",
       month: "short",
       day: "numeric",
@@ -162,7 +162,7 @@ export function ReferralsList({ referrals }: ReferralsListProps) {
   if (referrals.length === 0) {
     return (
       <div className="text-center py-12 text-gray-500">
-        <p>No referrals yet</p>
+        <p>אין הפניות עדיין</p>
       </div>
     );
   }
@@ -184,7 +184,7 @@ export function ReferralsList({ referrals }: ReferralsListProps) {
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
                     <h3 className="text-lg font-semibold">
-                      {referral.name || "Unknown"}
+                      {referral.name || "לא ידוע"}
                     </h3>
                     {getStatusBadge(referral.status)}
                   </div>
@@ -213,7 +213,7 @@ export function ReferralsList({ referrals }: ReferralsListProps) {
                     )}
                   </div>
                   <div className="mt-3 text-xs text-gray-500">
-                    Referred by{" "}
+                    הופנה על ידי{" "}
                     {referral.referrer.name || referral.referrer.email} •{" "}
                     {formatDate(referral.createdAt)}
                   </div>
@@ -229,11 +229,11 @@ export function ReferralsList({ referrals }: ReferralsListProps) {
                       onClick={() => handleReject(referral)}
                     >
                       <XCircle className="h-4 w-4 mr-1" />
-                      Reject
+                      דחה
                     </Button>
                     <Button size="sm" onClick={() => handleApprove(referral)}>
                       <CheckCircle2 className="h-4 w-4 mr-1" />
-                      Approve
+                      אשר
                     </Button>
                   </div>
                 )}
@@ -251,49 +251,49 @@ export function ReferralsList({ referrals }: ReferralsListProps) {
               <DialogHeader>
                 <DialogTitle>
                   {action === "approve"
-                    ? "Approve Referral"
-                    : "Reject Referral"}
+                    ? "אשר הפניה"
+                    : "דחה הפניה"}
                 </DialogTitle>
                 <DialogDescription>
                   {action === "approve"
-                    ? "This will create a new member account. Review the details below."
-                    : "Please provide a reason for rejection (optional)."}
+                    ? "זה ייצור חשבון חבר חדש. סקור את הפרטים למטה."
+                    : "אנא ספק סיבה לדחייה (אופציונלי)."}
                 </DialogDescription>
               </DialogHeader>
 
               <div className="space-y-4">
                 {/* Basic Info */}
                 <div>
-                  <h4 className="font-semibold mb-2">Basic Information</h4>
+                  <h4 className="font-semibold mb-2">מידע בסיסי</h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center gap-2">
                       <User className="h-4 w-4 text-gray-400" />
-                      <span className="font-medium">Name:</span>{" "}
-                      {selectedReferral.name || "Not provided"}
+                      <span className="font-medium">שם:</span>{" "}
+                      {selectedReferral.name || "לא סופק"}
                     </div>
                     <div className="flex items-center gap-2">
                       <Mail className="h-4 w-4 text-gray-400" />
-                      <span className="font-medium">Email:</span>{" "}
+                      <span className="font-medium">אימייל:</span>{" "}
                       {selectedReferral.email}
                     </div>
                     {selectedReferral.phone && (
                       <div className="flex items-center gap-2">
                         <Phone className="h-4 w-4 text-gray-400" />
-                        <span className="font-medium">Phone:</span>{" "}
+                        <span className="font-medium">טלפון:</span>{" "}
                         {selectedReferral.phone}
                       </div>
                     )}
                     {selectedReferral.age && (
                       <div className="flex items-center gap-2">
                         <Calendar className="h-4 w-4 text-gray-400" />
-                        <span className="font-medium">Age:</span>{" "}
+                        <span className="font-medium">גיל:</span>{" "}
                         {selectedReferral.age}
                       </div>
                     )}
                     {selectedReferral.city && (
                       <div className="flex items-center gap-2">
                         <MapPin className="h-4 w-4 text-gray-400" />
-                        <span className="font-medium">City:</span>{" "}
+                        <span className="font-medium">עיר:</span>{" "}
                         {selectedReferral.city}
                       </div>
                     )}
@@ -302,15 +302,15 @@ export function ReferralsList({ referrals }: ReferralsListProps) {
 
                 {/* Relationship */}
                 <div>
-                  <h4 className="font-semibold mb-2">Relationship</h4>
+                  <h4 className="font-semibold mb-2">קשר</h4>
                   <div className="space-y-2 text-sm">
                     <div>
-                      <span className="font-medium">How they know them:</span>{" "}
-                      {selectedReferral.howDoYouKnow || "Not provided"}
+                      <span className="font-medium">איך הם מכירים:</span>{" "}
+                      {selectedReferral.howDoYouKnow || "לא סופק"}
                     </div>
                     <div>
-                      <span className="font-medium">How long:</span>{" "}
-                      {selectedReferral.howLong || "Not provided"}
+                      <span className="font-medium">כמה זמן:</span>{" "}
+                      {selectedReferral.howLong || "לא סופק"}
                     </div>
                   </div>
                 </div>
@@ -320,7 +320,7 @@ export function ReferralsList({ referrals }: ReferralsListProps) {
                   selectedReferral.linkedinUrl ||
                   selectedReferral.instagramUrl) && (
                   <div>
-                    <h4 className="font-semibold mb-2">Professional</h4>
+                    <h4 className="font-semibold mb-2">מקצועי</h4>
                     <div className="space-y-2 text-sm">
                       {selectedReferral.occupation && (
                         <div className="flex items-center gap-2">
@@ -337,7 +337,7 @@ export function ReferralsList({ referrals }: ReferralsListProps) {
                             rel="noopener noreferrer"
                             className="text-blue-600 hover:underline"
                           >
-                            LinkedIn Profile
+                            פרופיל LinkedIn
                           </a>
                         </div>
                       )}
@@ -350,7 +350,7 @@ export function ReferralsList({ referrals }: ReferralsListProps) {
                             rel="noopener noreferrer"
                             className="text-blue-600 hover:underline"
                           >
-                            Instagram Profile
+                            פרופיל Instagram
                           </a>
                         </div>
                       )}
@@ -361,17 +361,17 @@ export function ReferralsList({ referrals }: ReferralsListProps) {
                 {/* Personal */}
                 {(selectedReferral.hobbies || selectedReferral.interests) && (
                   <div>
-                    <h4 className="font-semibold mb-2">Personal</h4>
+                    <h4 className="font-semibold mb-2">אישי</h4>
                     <div className="space-y-2 text-sm">
                       {selectedReferral.hobbies && (
                         <div>
-                          <span className="font-medium">Hobbies:</span>{" "}
+                          <span className="font-medium">תחביבים:</span>{" "}
                           {selectedReferral.hobbies}
                         </div>
                       )}
                       {selectedReferral.interests && (
                         <div>
-                          <span className="font-medium">Interests:</span>{" "}
+                          <span className="font-medium">תחומי עניין:</span>{" "}
                           {selectedReferral.interests}
                         </div>
                       )}
@@ -393,14 +393,14 @@ export function ReferralsList({ referrals }: ReferralsListProps) {
                 {action === "reject" && (
                   <div>
                     <Label htmlFor="rejectionReason">
-                      Rejection Reason (Optional)
+                      סיבת דחייה (אופציונלי)
                     </Label>
                     <Textarea
                       id="rejectionReason"
                       value={rejectionReason}
                       onChange={(e) => setRejectionReason(e.target.value)}
                       rows={3}
-                      placeholder="Why is this referral being rejected?"
+                      placeholder="למה ההפניה נדחית?"
                       className="mt-1"
                     />
                   </div>
@@ -413,7 +413,7 @@ export function ReferralsList({ referrals }: ReferralsListProps) {
                   onClick={() => setActionDialogOpen(false)}
                   disabled={processing}
                 >
-                  Cancel
+                  ביטול
                 </Button>
                 <Button
                   variant={action === "reject" ? "destructive" : "default"}
@@ -421,10 +421,10 @@ export function ReferralsList({ referrals }: ReferralsListProps) {
                   disabled={processing}
                 >
                   {processing
-                    ? "Processing..."
+                    ? "מעבד..."
                     : action === "approve"
-                    ? "Approve & Create Account"
-                    : "Reject Referral"}
+                    ? "אשר ויצור חשבון"
+                    : "דחה הפניה"}
                 </Button>
               </DialogFooter>
             </>

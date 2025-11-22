@@ -62,14 +62,14 @@ export function MembersList({ members }: MembersListProps) {
                 size="sm"
                 onClick={() => handleEdit(member)}
               >
-                Edit
+                ערוך
               </Button>
               <Button
                 variant="destructive"
                 size="sm"
                 onClick={() => handleDelete(member)}
               >
-                Delete
+                מחק
               </Button>
             </div>
           </div>

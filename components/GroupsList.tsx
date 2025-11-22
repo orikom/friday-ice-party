@@ -47,11 +47,11 @@ export function GroupsList({ groups }: GroupsListProps) {
             <div>
               <div className="font-semibold">{group.name}</div>
               <div className="text-sm text-gray-600">
-                {group._count.members} members • {group._count.targetEvents}{" "}
-                events
+                {group._count.members} חברים • {group._count.targetEvents}{" "}
+                אירועים
               </div>
               {group.waId && (
-                <div className="text-xs text-gray-500">WA ID: {group.waId}</div>
+                <div className="text-xs text-gray-500">מזהה WA: {group.waId}</div>
               )}
             </div>
             <div className="flex gap-2">
@@ -60,14 +60,14 @@ export function GroupsList({ groups }: GroupsListProps) {
                 size="sm"
                 onClick={() => handleEdit(group)}
               >
-                Edit
+                ערוך
               </Button>
               <Button
                 variant="destructive"
                 size="sm"
                 onClick={() => handleDelete(group)}
               >
-                Delete
+                מחק
               </Button>
             </div>
           </div>

@@ -20,14 +20,14 @@ import { Progress } from "@/components/ui/progress";
 
 const referralSchema = z.object({
   // Step 1: Basic Info
-  email: z.string().email("Invalid email address"),
-  name: z.string().min(1, "Name is required"),
+  email: z.string().email("כתובת אימייל לא תקינה"),
+  name: z.string().min(1, "שם נדרש"),
   phone: z.string().optional(),
   age: z.number().optional().nullable(),
 
   // Step 2: Relationship
-  howDoYouKnow: z.string().min(1, "Please tell us how you know them"),
-  howLong: z.string().min(1, "Please specify how long you've known them"),
+  howDoYouKnow: z.string().min(1, "אנא ספר לנו איך אתה מכיר אותו"),
+  howLong: z.string().min(1, "אנא ציין כמה זמן אתה מכיר אותו"),
 
   // Step 3: Professional
   occupation: z.string().optional(),
@@ -58,11 +58,11 @@ const referralSchema = z.object({
 type ReferralFormData = z.infer<typeof referralSchema>;
 
 const STEPS = [
-  { number: 1, title: "Basic Information", description: "Who is this person?" },
-  { number: 2, title: "Relationship", description: "How do you know them?" },
-  { number: 3, title: "Professional", description: "Work & online presence" },
-  { number: 4, title: "Personal", description: "Interests & hobbies" },
-  { number: 5, title: "Additional Notes", description: "Anything else?" },
+  { number: 1, title: "מידע בסיסי", description: "מי האדם הזה?" },
+  { number: 2, title: "קשר", description: "איך אתה מכיר אותו?" },
+  { number: 3, title: "מקצועי", description: "עבודה ונוכחות מקוונת" },
+  { number: 4, title: "אישי", description: "תחומי עניין ותחביבים" },
+  { number: 5, title: "הערות נוספות", description: "משהו נוסף?" },
 ];
 
 export function ReferralForm() {
@@ -146,7 +146,7 @@ export function ReferralForm() {
       if (!response.ok) {
         const error = await response.json();
         console.error("API error:", error);
-        throw new Error(error.error || "Failed to submit referral");
+        throw new Error(error.error || "נכשל בשליחת ההפניה");
       }
 
       const result = await response.json();
@@ -166,9 +166,9 @@ export function ReferralForm() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-3xl">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">Refer a New Member</h1>
+        <h1 className="text-4xl font-bold mb-2">הפנה חבר חדש</h1>
         <p className="text-gray-600">
-          Help grow our community by referring someone you know
+          עזור לגדול את הקהילה שלנו על ידי הפניה של מישהו שאתה מכיר
         </p>
       </div>
 
@@ -178,7 +178,7 @@ export function ReferralForm() {
           <div className="space-y-2">
             <div className="flex justify-between text-sm text-gray-600 mb-2">
               <span>
-                Step {currentStep} of {STEPS.length}
+                שלב {currentStep} מתוך {STEPS.length}
               </span>
               <span>{Math.round(progress)}%</span>
             </div>
@@ -219,7 +219,7 @@ export function ReferralForm() {
               <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
                 <div>
                   <Label htmlFor="email" className="mb-2 block">
-                    Email Address *
+                    כתובת אימייל *
                   </Label>
                   <Input
                     id="email"
@@ -236,12 +236,12 @@ export function ReferralForm() {
 
                 <div>
                   <Label htmlFor="name" className="mb-2 block">
-                    Full Name *
+                    שם מלא *
                   </Label>
                   <Input
                     id="name"
                     {...register("name")}
-                    placeholder="John Doe"
+                    placeholder="יוני כהן"
                   />
                   {errors.name && (
                     <p className="text-sm text-red-600 mt-1">
@@ -252,7 +252,7 @@ export function ReferralForm() {
 
                 <div>
                   <Label htmlFor="phone" className="mb-2 block">
-                    Phone Number
+                    מספר טלפון
                   </Label>
                   <Input
                     id="phone"
@@ -264,7 +264,7 @@ export function ReferralForm() {
 
                 <div>
                   <Label htmlFor="age" className="mb-2 block">
-                    Age
+                    גיל
                   </Label>
                   <Input
                     id="age"
@@ -283,22 +283,22 @@ export function ReferralForm() {
               <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
                 <div>
                   <Label htmlFor="howDoYouKnow" className="mb-2 block">
-                    How do you know this person? *
+                    איך אתה מכיר את האדם הזה? *
                   </Label>
                   <select
                     id="howDoYouKnow"
                     {...register("howDoYouKnow")}
                     className="w-full px-3 py-2 border rounded-md"
                   >
-                    <option value="">Select...</option>
-                    <option value="friend">Friend</option>
-                    <option value="colleague">Colleague / Co-worker</option>
-                    <option value="classmate">Classmate / School</option>
-                    <option value="family">Family</option>
-                    <option value="neighbor">Neighbor</option>
-                    <option value="met-at-event">Met at an event</option>
-                    <option value="online">Met online</option>
-                    <option value="other">Other</option>
+                    <option value="">בחר...</option>
+                    <option value="friend">חבר</option>
+                    <option value="colleague">קולגה / עמית לעבודה</option>
+                    <option value="classmate">חבר לכיתה / בית ספר</option>
+                    <option value="family">משפחה</option>
+                    <option value="neighbor">שכן</option>
+                    <option value="met-at-event">נפגשנו באירוע</option>
+                    <option value="online">נפגשנו באינטרנט</option>
+                    <option value="other">אחר</option>
                   </select>
                   {errors.howDoYouKnow && (
                     <p className="text-sm text-red-600 mt-1">
@@ -309,21 +309,21 @@ export function ReferralForm() {
 
                 <div>
                   <Label htmlFor="howLong" className="mb-2 block">
-                    How long have you known them? *
+                    כמה זמן אתה מכיר אותו? *
                   </Label>
                   <select
                     id="howLong"
                     {...register("howLong")}
                     className="w-full px-3 py-2 border rounded-md"
                   >
-                    <option value="">Select...</option>
+                    <option value="">בחר...</option>
                     <option value="less-than-6-months">
-                      Less than 6 months
+                      פחות מ-6 חודשים
                     </option>
-                    <option value="6-months-1-year">6 months - 1 year</option>
-                    <option value="1-2-years">1-2 years</option>
-                    <option value="2-5-years">2-5 years</option>
-                    <option value="more-than-5-years">More than 5 years</option>
+                    <option value="6-months-1-year">6 חודשים - שנה</option>
+                    <option value="1-2-years">1-2 שנים</option>
+                    <option value="2-5-years">2-5 שנים</option>
+                    <option value="more-than-5-years">יותר מ-5 שנים</option>
                   </select>
                   {errors.howLong && (
                     <p className="text-sm text-red-600 mt-1">
@@ -339,18 +339,18 @@ export function ReferralForm() {
               <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
                 <div>
                   <Label htmlFor="occupation" className="mb-2 block">
-                    Occupation / Profession
+                    מקצוע / תעסוקה
                   </Label>
                   <Input
                     id="occupation"
                     {...register("occupation")}
-                    placeholder="Software Engineer, Designer, etc."
+                    placeholder="מהנדס תוכנה, מעצב וכו'"
                   />
                 </div>
 
                 <div>
                   <Label htmlFor="linkedinUrl" className="mb-2 block">
-                    LinkedIn Profile URL
+                    כתובת פרופיל LinkedIn
                   </Label>
                   <Input
                     id="linkedinUrl"
@@ -367,7 +367,7 @@ export function ReferralForm() {
 
                 <div>
                   <Label htmlFor="instagramUrl" className="mb-2 block">
-                    Instagram Profile URL
+                    כתובת פרופיל Instagram
                   </Label>
                   <Input
                     id="instagramUrl"
@@ -389,40 +389,40 @@ export function ReferralForm() {
               <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
                 <div>
                   <Label htmlFor="city" className="mb-2 block">
-                    City
+                    עיר
                   </Label>
                   <Input
                     id="city"
                     {...register("city")}
-                    placeholder="Tel Aviv, Jerusalem, etc."
+                    placeholder="תל אביב, ירושלים וכו'"
                   />
                 </div>
 
                 <div>
                   <Label htmlFor="hobbies" className="mb-2 block">
-                    Hobbies
+                    תחביבים
                   </Label>
                   <Input
                     id="hobbies"
                     {...register("hobbies")}
-                    placeholder="e.g., Swimming, Reading, Cooking, Traveling"
+                    placeholder="למשל: שחייה, קריאה, בישול, טיולים"
                   />
                   <p className="text-xs text-gray-500 mt-1">
-                    Separate multiple hobbies with commas
+                    הפרד תחביבים מרובים בפסיקים
                   </p>
                 </div>
 
                 <div>
                   <Label htmlFor="interests" className="mb-2 block">
-                    Interests
+                    תחומי עניין
                   </Label>
                   <Input
                     id="interests"
                     {...register("interests")}
-                    placeholder="e.g., Technology, Music, Fitness, Art"
+                    placeholder="למשל: טכנולוגיה, מוזיקה, כושר, אמנות"
                   />
                   <p className="text-xs text-gray-500 mt-1">
-                    Separate multiple interests with commas
+                    הפרד תחומי עניין מרובים בפסיקים
                   </p>
                 </div>
               </div>
@@ -433,13 +433,13 @@ export function ReferralForm() {
               <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
                 <div>
                   <Label htmlFor="notes" className="mb-2 block">
-                    Additional Notes
+                    הערות נוספות
                   </Label>
                   <Textarea
                     id="notes"
                     {...register("notes")}
                     rows={6}
-                    placeholder="Tell us anything else you think would be helpful for us to know about this person. Why do you think they would be a good fit for our community?"
+                    placeholder="ספר לנו כל דבר אחר שאתה חושב שיהיה מועיל לנו לדעת על האדם הזה. למה אתה חושב שהוא יתאים לקהילה שלנו?"
                     onKeyDown={(e) => {
                       // Only allow Shift+Enter for new lines, prevent Enter from submitting
                       if (e.key === "Enter" && !e.shiftKey) {
@@ -460,11 +460,11 @@ export function ReferralForm() {
                 onClick={handleBack}
                 disabled={currentStep === 1}
               >
-                ← Back
+                ← חזור
               </Button>
               {currentStep < STEPS.length ? (
                 <Button type="button" onClick={handleNext}>
-                  Next →
+                  הבא →
                 </Button>
               ) : (
                 <Button
@@ -481,7 +481,7 @@ export function ReferralForm() {
                     }
                   }}
                 >
-                  {submitting ? "Submitting..." : "Submit Referral"}
+                  {submitting ? "שולח..." : "שלח הפניה"}
                 </Button>
               )}
             </div>

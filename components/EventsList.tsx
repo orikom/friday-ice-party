@@ -78,25 +78,25 @@ export function EventsList({ events }: EventsListProps) {
                     </p>
                   )}
                   <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
-                    <span>{event.joins.length} attendees</span>
+                    <span>{event.joins.length} משתתפים</span>
                     <span>•</span>
-                    <span>Created by {event.createdBy.name || "Unknown"}</span>
+                    <span>נוצר על ידי {event.createdBy.name || "לא ידוע"}</span>
                   </div>
                   <div className="flex gap-2">
                     <Link href={`/events/${event.shortCode}`}>
                       <Button variant="outline" size="sm">
-                        View Event
+                        צפה באירוע
                       </Button>
                     </Link>
                     <Link href={`/admin/events/${event.shortCode}/edit`}>
-                      <Button size="sm">Edit</Button>
+                      <Button size="sm">ערוך</Button>
                     </Link>
                     <Button
                       variant="destructive"
                       size="sm"
                       onClick={() => handleDelete(event)}
                     >
-                      Delete
+                      מחק
                     </Button>
                   </div>
                 </div>

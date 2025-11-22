@@ -10,7 +10,7 @@ export function SignOutButton() {
       size="sm"
       onClick={() => signOut({ callbackUrl: "/" })}
     >
-      Sign Out
+      התנתק
     </Button>
   );
 }

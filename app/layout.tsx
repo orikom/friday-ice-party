@@ -20,8 +20,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Friday Pool Party",
-  description: "Community events and member directory",
+  title: "FRIDAY POOL PARTY",
+  description: "אירועי קהילה וספריית חברים",
 };
 
 export default async function RootLayout({
@@ -41,7 +41,7 @@ export default async function RootLayout({
   }
 
   return (
-    <html lang="en">
+    <html lang="he" dir="rtl">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -53,7 +53,7 @@ export default async function RootLayout({
               </Link>
               <div className="flex items-center gap-4">
                 <Link href="/members" className="text-sm hover:text-blue-600">
-                  Members
+                  חברים
                 </Link>
                 {user ? (
                   <>
@@ -61,14 +61,14 @@ export default async function RootLayout({
                       href="/referrals/new"
                       className="text-sm hover:text-blue-600"
                     >
-                      Refer Someone
+                      הפנה מישהו
                     </Link>
                     {user.role === "ADMIN" && (
                       <Link
                         href="/admin"
                         className="text-sm hover:text-blue-600"
                       >
-                        Admin
+                        ניהול
                       </Link>
                     )}
                     <Link
@@ -97,7 +97,7 @@ export default async function RootLayout({
                 ) : (
                   <Link href="/auth/signin">
                     <Button variant="default" size="sm">
-                      Sign In
+                      התחבר
                     </Button>
                   </Link>
                 )}

@@ -45,7 +45,7 @@ export function WhatsAppShareButton({
       `📅 ${dateStr}`,
       location && `📍 ${location}`,
       "",
-      "👉 Join the event:",
+      "👉 הצטרף לאירוע:",
       eventUrl, // URL on its own line - WhatsApp will make this clickable and show preview
     ].filter(Boolean);
 

@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 const inviteSchema = z.object({
-  email: z.string().email("Invalid email"),
+  email: z.string().email("אימייל לא תקין"),
   phone: z.string().optional(),
   name: z.string().optional(),
   role: z.enum(["ADMIN", "MEMBER"]).default("MEMBER"),
@@ -46,7 +46,7 @@ export function InviteMemberForm() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || "Failed to invite member");
+        throw new Error(error.error || "נכשל בהזמנת החבר");
       }
 
       setSuccess(true);
@@ -63,7 +63,7 @@ export function InviteMemberForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div>
-        <Label htmlFor="email">Email *</Label>
+        <Label htmlFor="email">אימייל *</Label>
         <Input
           id="email"
           type="email"
@@ -76,33 +76,33 @@ export function InviteMemberForm() {
       </div>
 
       <div>
-        <Label htmlFor="name">Name</Label>
-        <Input id="name" {...register("name")} placeholder="Optional" />
+        <Label htmlFor="name">שם</Label>
+        <Input id="name" {...register("name")} placeholder="אופציונלי" />
       </div>
 
       <div>
-        <Label htmlFor="phone">Phone</Label>
-        <Input id="phone" {...register("phone")} placeholder="Optional" />
+        <Label htmlFor="phone">טלפון</Label>
+        <Input id="phone" {...register("phone")} placeholder="אופציונלי" />
       </div>
 
       <div>
-        <Label htmlFor="role">Role</Label>
+        <Label htmlFor="role">תפקיד</Label>
         <select
           id="role"
           {...register("role")}
           className="w-full px-3 py-2 border rounded-md"
         >
-          <option value="MEMBER">Member</option>
-          <option value="ADMIN">Admin</option>
+          <option value="MEMBER">חבר</option>
+          <option value="ADMIN">מנהל</option>
         </select>
       </div>
 
       {success && (
-        <p className="text-sm text-green-600">Member invited successfully!</p>
+        <p className="text-sm text-green-600">החבר הוזמן בהצלחה!</p>
       )}
 
       <Button type="submit" disabled={submitting}>
-        {submitting ? "Inviting..." : "Invite Member"}
+        {submitting ? "מזמין..." : "הזמן חבר"}
       </Button>
     </form>
   );

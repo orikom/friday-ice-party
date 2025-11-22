@@ -69,9 +69,9 @@ export default function MembersPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">Member Directory</h1>
+        <h1 className="text-4xl font-bold mb-2">ספריית חברים</h1>
         <p className="text-gray-600">
-          Search and connect with community members
+          חפש והתחבר עם חברי הקהילה
         </p>
       </div>
 
@@ -79,12 +79,12 @@ export default function MembersPage() {
         <div className="flex gap-2">
           <Input
             type="text"
-            placeholder="Search by name, city, or occupation..."
+            placeholder="חפש לפי שם, עיר או מקצוע..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="max-w-md"
           />
-          <Button type="submit">Search</Button>
+          <Button type="submit">חפש</Button>
           {searchQuery && (
             <Button
               type="button"
@@ -94,7 +94,7 @@ export default function MembersPage() {
                 fetchMembers("");
               }}
             >
-              Clear
+              נקה
             </Button>
           )}
         </div>
@@ -102,11 +102,11 @@ export default function MembersPage() {
 
       {loading ? (
         <div className="text-center py-12">
-          <p className="text-gray-500">Loading members...</p>
+          <p className="text-gray-500">טוען חברים...</p>
         </div>
       ) : members.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-gray-500">No members found.</p>
+          <p className="text-gray-500">לא נמצאו חברים.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -194,7 +194,7 @@ function MemberDropdown({ member }: { member: Member }) {
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => router.push("/profile")}>
                 <Edit className="h-4 w-4 mr-2" />
-                Edit Profile
+                ערוך פרופיל
               </DropdownMenuItem>
               <DropdownMenuSeparator />
             </>
@@ -206,7 +206,7 @@ function MemberDropdown({ member }: { member: Member }) {
                 className="flex items-center gap-1 text-sm text-blue-600 hover:underline"
               >
                 <Phone className="h-4 w-4" />
-                Call
+                התקשר
               </a>
             )}
             {member.instagramUrl && (
@@ -217,7 +217,7 @@ function MemberDropdown({ member }: { member: Member }) {
                 className="flex items-center gap-1 text-sm text-blue-600 hover:underline"
               >
                 <Instagram className="h-4 w-4" />
-                Instagram
+                אינסטגרם
               </a>
             )}
             {member.linkedinUrl && (
@@ -228,7 +228,7 @@ function MemberDropdown({ member }: { member: Member }) {
                 className="flex items-center gap-1 text-sm text-blue-600 hover:underline"
               >
                 <Linkedin className="h-4 w-4" />
-                LinkedIn
+                לינקדאין
               </a>
             )}
           </div>

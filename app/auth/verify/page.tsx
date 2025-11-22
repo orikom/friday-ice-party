@@ -15,16 +15,15 @@ export default function VerifyPage() {
           <CardHeader>
             <CardTitle className="text-2xl flex items-center gap-2">
               <CheckCircle className="h-6 w-6 text-green-600" />
-              Check your email
+              בדוק את האימייל שלך
             </CardTitle>
             <CardDescription>
-              We've sent you a magic link to sign in
+              שלחנו לך קישור קסם להתחברות
             </CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-gray-600">
-              Click the link in the email to sign in. The link will expire in 24
-              hours.
+              לחץ על הקישור באימייל כדי להתחבר. הקישור יפוג תוך 24 שעות.
             </p>
           </CardContent>
         </Card>

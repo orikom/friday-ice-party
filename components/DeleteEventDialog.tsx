@@ -33,7 +33,7 @@ export function DeleteEventDialog({
   const handleDelete = async () => {
     if (
       !confirm(
-        `Are you sure you want to delete "${event.title}"? This will remove ${event.attendeeCount} attendee(s). This action cannot be undone.`
+        `האם אתה בטוח שברצונך למחוק את "${event.title}"? זה יסיר ${event.attendeeCount} משתתף/ים. פעולה זו לא ניתנת לביטול.`
       )
     ) {
       return;
@@ -47,7 +47,7 @@ export function DeleteEventDialog({
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || "Failed to delete event");
+        throw new Error(error.error || "נכשל במחיקת האירוע");
       }
 
       onOpenChange(false);
@@ -55,7 +55,7 @@ export function DeleteEventDialog({
       router.push("/admin/events");
     } catch (error) {
       console.error("Delete event error:", error);
-      alert(error instanceof Error ? error.message : "Failed to delete event");
+      alert(error instanceof Error ? error.message : "נכשל במחיקת האירוע");
     } finally {
       setDeleting(false);
     }
@@ -65,11 +65,10 @@ export function DeleteEventDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete Event</DialogTitle>
+          <DialogTitle>מחק אירוע</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete &quot;{event.title}&quot;? This
-            action cannot be undone and will remove {event.attendeeCount}{" "}
-            attendee(s).
+            האם אתה בטוח שברצונך למחוק את &quot;{event.title}&quot;? פעולה זו לא ניתנת לביטול ותסיר {event.attendeeCount}{" "}
+            משתתף/ים.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
@@ -79,7 +78,7 @@ export function DeleteEventDialog({
             onClick={() => onOpenChange(false)}
             disabled={deleting}
           >
-            Cancel
+            ביטול
           </Button>
           <Button
             type="button"
@@ -87,7 +86,7 @@ export function DeleteEventDialog({
             onClick={handleDelete}
             disabled={deleting}
           >
-            {deleting ? "Deleting..." : "Delete"}
+            {deleting ? "מוחק..." : "מחק"}
           </Button>
         </DialogFooter>
       </DialogContent>

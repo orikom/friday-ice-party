@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 
 const groupSchema = z.object({
-  name: z.string().min(1, "Name is required"),
+  name: z.string().min(1, "שם נדרש"),
   waId: z.string().optional(),
 });
 
@@ -43,7 +43,7 @@ export function ManageGroupsForm() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || "Failed to create group");
+        throw new Error(error.error || "נכשל ביצירת הקבוצה");
       }
 
       setSuccess(true);
@@ -61,11 +61,11 @@ export function ManageGroupsForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div>
-        <Label htmlFor="name">Group Name *</Label>
+        <Label htmlFor="name">שם הקבוצה *</Label>
         <Input
           id="name"
           {...register("name")}
-          placeholder="party, yoga, mingling, business, etc."
+          placeholder="מסיבה, יוגה, מינגלינג, עסקים וכו'"
         />
         {errors.name && (
           <p className="text-sm text-red-600 mt-1">{errors.name.message}</p>
@@ -73,23 +73,23 @@ export function ManageGroupsForm() {
       </div>
 
       <div>
-        <Label htmlFor="waId">WhatsApp Group ID</Label>
+        <Label htmlFor="waId">מזהה קבוצת וואטסאפ</Label>
         <Input
           id="waId"
           {...register("waId")}
-          placeholder="Optional - external WhatsApp group ID"
+          placeholder="אופציונלי - מזהה קבוצת וואטסאפ חיצוני"
         />
         <p className="text-xs text-gray-500 mt-1">
-          Leave empty for now. Set this when connecting to WhatsApp API.
+          השאר ריק לעת עתה. הגדר זאת בעת חיבור ל-WhatsApp API.
         </p>
       </div>
 
       {success && (
-        <p className="text-sm text-green-600">Group created successfully!</p>
+        <p className="text-sm text-green-600">הקבוצה נוצרה בהצלחה!</p>
       )}
 
       <Button type="submit" disabled={submitting}>
-        {submitting ? "Creating..." : "Create Group"}
+        {submitting ? "יוצר..." : "צור קבוצה"}
       </Button>
     </form>
   );

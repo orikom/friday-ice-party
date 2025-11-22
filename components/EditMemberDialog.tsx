@@ -86,7 +86,7 @@ export function EditMemberDialog({
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || "Failed to update member");
+        throw new Error(error.error || "נכשל בעדכון החבר");
       }
 
       onOpenChange(false);
@@ -103,17 +103,17 @@ export function EditMemberDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Edit Member</DialogTitle>
-          <DialogDescription>Update member details</DialogDescription>
+          <DialogTitle>ערוך חבר</DialogTitle>
+          <DialogDescription>עדכן פרטי חבר</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="name">שם</Label>
               <Input id="name" {...register("name")} />
             </div>
             <div>
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">אימייל</Label>
               <Input id="email" type="email" {...register("email")} />
               {errors.email && (
                 <p className="text-sm text-red-600 mt-1">
@@ -125,45 +125,45 @@ export function EditMemberDialog({
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="phone">Phone</Label>
+              <Label htmlFor="phone">טלפון</Label>
               <Input id="phone" {...register("phone")} />
             </div>
             <div>
-              <Label htmlFor="city">City</Label>
+              <Label htmlFor="city">עיר</Label>
               <Input id="city" {...register("city")} />
             </div>
           </div>
 
           <div>
-            <Label htmlFor="occupation">Occupation</Label>
+            <Label htmlFor="occupation">מקצוע</Label>
             <Input id="occupation" {...register("occupation")} />
           </div>
 
           <div>
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">תיאור</Label>
             <Input id="description" {...register("description")} />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="instagramUrl">Instagram URL</Label>
+              <Label htmlFor="instagramUrl">כתובת Instagram</Label>
               <Input id="instagramUrl" {...register("instagramUrl")} />
             </div>
             <div>
-              <Label htmlFor="linkedinUrl">LinkedIn URL</Label>
+              <Label htmlFor="linkedinUrl">כתובת LinkedIn</Label>
               <Input id="linkedinUrl" {...register("linkedinUrl")} />
             </div>
           </div>
 
           <div>
-            <Label htmlFor="role">Role</Label>
+            <Label htmlFor="role">תפקיד</Label>
             <select
               id="role"
               {...register("role")}
               className="w-full px-3 py-2 border rounded-md"
             >
-              <option value="MEMBER">MEMBER</option>
-              <option value="ADMIN">ADMIN</option>
+              <option value="MEMBER">חבר</option>
+              <option value="ADMIN">מנהל</option>
             </select>
           </div>
 
@@ -173,10 +173,10 @@ export function EditMemberDialog({
               variant="outline"
               onClick={() => onOpenChange(false)}
             >
-              Cancel
+              ביטול
             </Button>
             <Button type="submit" disabled={submitting}>
-              {submitting ? "Updating..." : "Update"}
+              {submitting ? "מעדכן..." : "עדכן"}
             </Button>
           </DialogFooter>
         </form>
@@ -206,9 +206,9 @@ export function DeleteMemberDialog({
   const handleDelete = async () => {
     if (
       !confirm(
-        `Are you sure you want to delete "${
+        `האם אתה בטוח שברצונך למחוק את "${
           member.name || member.email
-        }"? This action cannot be undone.`
+        }"? פעולה זו לא ניתנת לביטול.`
       )
     ) {
       return;
@@ -222,14 +222,14 @@ export function DeleteMemberDialog({
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || "Failed to delete member");
+        throw new Error(error.error || "נכשל במחיקת החבר");
       }
 
       onOpenChange(false);
       router.refresh();
     } catch (error) {
       console.error("Delete member error:", error);
-      alert(error instanceof Error ? error.message : "Failed to delete member");
+      alert(error instanceof Error ? error.message : "נכשל במחיקת החבר");
     } finally {
       setDeleting(false);
     }
@@ -239,10 +239,10 @@ export function DeleteMemberDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete Member</DialogTitle>
+          <DialogTitle>מחק חבר</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete &quot;{member.name || member.email}
-            &quot;? This action cannot be undone.
+            האם אתה בטוח שברצונך למחוק את &quot;{member.name || member.email}
+            &quot;? פעולה זו לא ניתנת לביטול.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
@@ -252,7 +252,7 @@ export function DeleteMemberDialog({
             onClick={() => onOpenChange(false)}
             disabled={deleting}
           >
-            Cancel
+            ביטול
           </Button>
           <Button
             type="button"
@@ -260,7 +260,7 @@ export function DeleteMemberDialog({
             onClick={handleDelete}
             disabled={deleting}
           >
-            {deleting ? "Deleting..." : "Delete"}
+            {deleting ? "מוחק..." : "מחק"}
           </Button>
         </DialogFooter>
       </DialogContent>

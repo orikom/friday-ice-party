@@ -37,7 +37,7 @@ export default function SignInPage() {
       if (!checkResponse.ok || !checkData.isMember) {
         setError(
           checkData.error ||
-            "This email is not registered. Only existing members can sign in."
+            "האימייל הזה לא רשום. רק חברים רשומים יכולים להתחבר."
         );
         setLoading(false);
         return;
@@ -52,7 +52,7 @@ export default function SignInPage() {
       router.push("/auth/verify");
     } catch (error) {
       console.error("Sign in error:", error);
-      setError("An error occurred. Please try again.");
+      setError("אירעה שגיאה. אנא נסה שוב.");
     } finally {
       setLoading(false);
     }
@@ -63,9 +63,9 @@ export default function SignInPage() {
       <div className="max-w-md mx-auto">
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl">Sign In</CardTitle>
+            <CardTitle className="text-2xl">התחבר</CardTitle>
             <CardDescription>
-              Enter your email to receive a magic link
+              הכנס את האימייל שלך כדי לקבל קישור קסם
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -76,7 +76,7 @@ export default function SignInPage() {
                     htmlFor="email"
                     className="block text-sm font-medium mb-2"
                   >
-                    Email
+                    אימייל
                   </label>
                   <Input
                     type="email"
@@ -95,7 +95,7 @@ export default function SignInPage() {
                   )}
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "Sending..." : "Send Magic Link"}
+                  {loading ? "שולח..." : "שלח קישור קסם"}
                 </Button>
               </div>
             </form>

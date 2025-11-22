@@ -19,9 +19,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 
 const eventSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  description: z.string().min(1, "Description is required"),
-  category: z.string().min(1, "Category is required"),
+  title: z.string().min(1, "כותרת נדרשת"),
+  description: z.string().min(1, "תיאור נדרש"),
+  category: z.string().min(1, "קטגוריה נדרשת"),
   imageUrl: z.string().optional(),
   startsAt: z.string().optional(),
   endsAt: z.string().optional(),
@@ -129,7 +129,7 @@ export default function EditEventPage() {
       }
     } catch (error) {
       console.error("Failed to fetch data:", error);
-      alert("Failed to load event data");
+      alert("נכשל בטעינת נתוני האירוע");
       router.push("/admin");
     } finally {
       setLoading(false);
@@ -158,7 +158,7 @@ export default function EditEventPage() {
       setValue("imageUrl", data.url);
     } catch (error) {
       console.error("Upload error:", error);
-      alert("Failed to upload image");
+      alert("נכשל בהעלאת התמונה");
     } finally {
       setUploading(false);
     }
@@ -188,11 +188,11 @@ export default function EditEventPage() {
           const errorMessages = errorData.details
             .map((err: any) => `${err.path.join(".")}: ${err.message}`)
             .join("\n");
-          alert(`Validation errors:\n${errorMessages}`);
+          alert(`שגיאות אימות:\n${errorMessages}`);
         } else {
-          alert(errorData.error || "Failed to update event");
+          alert(errorData.error || "נכשל בעדכון האירוע");
         }
-        throw new Error(errorData.error || "Failed to update event");
+        throw new Error(errorData.error || "נכשל בעדכון האירוע");
       }
 
       router.push(`/events/${shortCode}`);
@@ -201,7 +201,7 @@ export default function EditEventPage() {
       // Don't show alert again if we already showed validation errors
       if (!(error instanceof Error && error.message.includes("Validation"))) {
         alert(
-          error instanceof Error ? error.message : "Failed to update event"
+          error instanceof Error ? error.message : "נכשל בעדכון האירוע"
         );
       }
     } finally {
@@ -225,7 +225,7 @@ export default function EditEventPage() {
     return (
       <div className="container mx-auto px-4 py-8 max-w-2xl">
         <div className="text-center py-12">
-          <p className="text-gray-500">Loading event...</p>
+          <p className="text-gray-500">טוען אירוע...</p>
         </div>
       </div>
     );
@@ -235,9 +235,9 @@ export default function EditEventPage() {
     return (
       <div className="container mx-auto px-4 py-8 max-w-2xl">
         <div className="text-center py-12">
-          <p className="text-red-600">Event not found</p>
+          <p className="text-red-600">אירוע לא נמצא</p>
           <Button onClick={() => router.push("/admin")} className="mt-4">
-            Back to Admin
+            חזור לניהול
           </Button>
         </div>
       </div>
@@ -246,17 +246,17 @@ export default function EditEventPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-2xl">
-      <h1 className="text-4xl font-bold mb-8">Edit Event</h1>
+      <h1 className="text-4xl font-bold mb-8">ערוך אירוע</h1>
 
       <Card>
         <CardHeader>
-          <CardTitle>Event Details</CardTitle>
-          <CardDescription>Update the details for your event</CardDescription>
+          <CardTitle>פרטי האירוע</CardTitle>
+          <CardDescription>עדכן את הפרטים עבור האירוע שלך</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div>
-              <Label htmlFor="title">Title *</Label>
+              <Label htmlFor="title">כותרת *</Label>
               <Input id="title" {...register("title")} />
               {errors.title && (
                 <p className="text-sm text-red-600 mt-1">
@@ -266,7 +266,7 @@ export default function EditEventPage() {
             </div>
 
             <div>
-              <Label htmlFor="description">Description *</Label>
+              <Label htmlFor="description">תיאור *</Label>
               <Textarea
                 id="description"
                 {...register("description")}
@@ -280,11 +280,11 @@ export default function EditEventPage() {
             </div>
 
             <div>
-              <Label htmlFor="category">Category *</Label>
+              <Label htmlFor="category">קטגוריה *</Label>
               <Input
                 id="category"
                 {...register("category")}
-                placeholder="party, yoga, mingling, business, etc."
+                placeholder="מסיבה, יוגה, מינגלינג, עסקים וכו'"
               />
               {errors.category && (
                 <p className="text-sm text-red-600 mt-1">
@@ -294,7 +294,7 @@ export default function EditEventPage() {
             </div>
 
             <div>
-              <Label htmlFor="image">Image</Label>
+              <Label htmlFor="image">תמונה</Label>
               <Input
                 id="image"
                 type="file"
@@ -303,18 +303,18 @@ export default function EditEventPage() {
                 disabled={uploading}
               />
               {watch("imageUrl") && (
-                <p className="text-sm text-green-600 mt-1">Image uploaded</p>
+                <p className="text-sm text-green-600 mt-1">תמונה הועלתה</p>
               )}
               {event.imageUrl && !watch("imageUrl") && (
                 <p className="text-sm text-gray-500 mt-1">
-                  Current image: {event.imageUrl}
+                  תמונה נוכחית: {event.imageUrl}
                 </p>
               )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="startsAt">Start Date & Time</Label>
+                <Label htmlFor="startsAt">תאריך ושעת התחלה</Label>
                 <Input
                   id="startsAt"
                   type="datetime-local"
@@ -322,7 +322,7 @@ export default function EditEventPage() {
                 />
               </div>
               <div>
-                <Label htmlFor="endsAt">End Date & Time</Label>
+                <Label htmlFor="endsAt">תאריך ושעת סיום</Label>
                 <Input
                   id="endsAt"
                   type="datetime-local"
@@ -332,12 +332,12 @@ export default function EditEventPage() {
             </div>
 
             <div>
-              <Label htmlFor="location">Location</Label>
+              <Label htmlFor="location">מיקום</Label>
               <Input id="location" {...register("location")} />
             </div>
 
             <div>
-              <Label>Notify WhatsApp Groups</Label>
+              <Label>שלח התראות לקבוצות וואטסאפ</Label>
               <div className="space-y-2 mt-2">
                 {groups.map((group) => (
                   <div key={group.id} className="flex items-center space-x-2">
@@ -359,14 +359,14 @@ export default function EditEventPage() {
 
             <div className="flex gap-4">
               <Button type="submit" disabled={submitting}>
-                {submitting ? "Updating..." : "Update Event"}
+                {submitting ? "מעדכן..." : "עדכן אירוע"}
               </Button>
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => router.back()}
               >
-                Cancel
+                ביטול
               </Button>
             </div>
           </form>

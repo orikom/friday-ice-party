@@ -31,16 +31,14 @@ export default async function AdminGroupsPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">Manage Groups</h1>
-        <p className="text-gray-600">
-          Manage WhatsApp subgroups for event notifications
-        </p>
+        <h1 className="text-4xl font-bold mb-2">ניהול קבוצות</h1>
+        <p className="text-gray-600">נהל קבוצות וואטסאפ להתראות אירועים</p>
       </div>
 
       <Card className="mb-8">
         <CardHeader>
-          <CardTitle>Create Group</CardTitle>
-          <CardDescription>Add a new WhatsApp group</CardDescription>
+          <CardTitle>צור קבוצה</CardTitle>
+          <CardDescription>הוסף קבוצת וואטסאפ חדשה</CardDescription>
         </CardHeader>
         <CardContent>
           <ManageGroupsForm />
@@ -49,8 +47,8 @@ export default async function AdminGroupsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>All Groups</CardTitle>
-          <CardDescription>{groups.length} total groups</CardDescription>
+          <CardTitle>כל הקבוצות</CardTitle>
+          <CardDescription>{groups.length} קבוצות בסך הכל</CardDescription>
         </CardHeader>
         <CardContent>
           <GroupsList groups={groups} />

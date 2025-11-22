@@ -43,9 +43,9 @@ export default async function AdminReferralsPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">Member Referrals</h1>
+        <h1 className="text-4xl font-bold mb-2">הפניות חברים</h1>
         <p className="text-gray-600">
-          Review and manage member referrals from the community
+          סקור ונהל הפניות חברים מהקהילה
         </p>
       </div>
 
@@ -53,7 +53,7 @@ export default async function AdminReferralsPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Pending</CardTitle>
+            <CardTitle className="text-lg">ממתינים</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-yellow-600">
@@ -63,7 +63,7 @@ export default async function AdminReferralsPage() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Approved</CardTitle>
+            <CardTitle className="text-lg">אושרו</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-green-600">
@@ -73,7 +73,7 @@ export default async function AdminReferralsPage() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Rejected</CardTitle>
+            <CardTitle className="text-lg">נדחו</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-red-600">
@@ -86,9 +86,9 @@ export default async function AdminReferralsPage() {
       {/* Referrals List */}
       <Card>
         <CardHeader>
-          <CardTitle>All Referrals</CardTitle>
+          <CardTitle>כל ההפניות</CardTitle>
           <CardDescription>
-            Click on a referral to view details and approve or reject
+            לחץ על הפניה כדי לצפות בפרטים ולאשר או לדחות
           </CardDescription>
         </CardHeader>
         <CardContent>
