@@ -31,6 +31,18 @@ export const authOptions: NextAuthOptions = {
       server: getEmailServer(),
       from: process.env.EMAIL_FROM || "noreply@fridaypoolparty.com",
       async sendVerificationRequest({ identifier, url, provider }) {
+        // Check if the email belongs to an existing member
+        const user = await prisma.user.findUnique({
+          where: { email: identifier.toLowerCase().trim() },
+        });
+
+        if (!user) {
+          // Silently fail - don't send email and don't reveal that the email doesn't exist
+          // This prevents email enumeration attacks
+          console.log(`⚠️  Magic link request blocked for non-member: ${identifier}`);
+          return;
+        }
+
         // In development, log the magic link to console
         if (
           process.env.NODE_ENV === "development" &&

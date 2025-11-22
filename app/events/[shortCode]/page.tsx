@@ -13,7 +13,9 @@ import { formatDateRange } from "@/lib/time";
 import { getSessionUser } from "@/lib/auth-helpers";
 import Link from "next/link";
 import { JoinEventButton } from "@/components/JoinEventButton";
+import { WhatsAppShareButton } from "@/components/WhatsAppShareButton";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 
 async function getEvent(shortCode: string) {
   const event = await prisma.event.findUnique({
@@ -52,6 +54,63 @@ async function getEvent(shortCode: string) {
   return {
     ...event,
     attendeeCount: event.joins.length,
+  };
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ shortCode: string }>;
+}): Promise<Metadata> {
+  const { shortCode } = await params;
+  const event = await getEvent(shortCode);
+
+  if (!event) {
+    return {
+      title: "Event Not Found",
+    };
+  }
+
+  const siteUrl = process.env.SITE_URL || "http://localhost:3000";
+  const eventUrl = `${siteUrl}/events/${shortCode}`;
+  const imageUrl = event.imageUrl
+    ? event.imageUrl.startsWith("http")
+      ? event.imageUrl
+      : `${siteUrl}${event.imageUrl}`
+    : undefined;
+
+  return {
+    title: event.title,
+    description: event.description,
+    openGraph: {
+      title: event.title,
+      description: event.description,
+      type: "website",
+      url: eventUrl,
+      siteName: "Friday Pool Party",
+      locale: "en_US",
+      images: imageUrl
+        ? [
+            {
+              url: imageUrl,
+              width: 1200,
+              height: 630,
+              alt: event.title,
+              type: "image/jpeg",
+            },
+          ]
+        : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: event.title,
+      description: event.description,
+      images: imageUrl ? [imageUrl] : [],
+    },
+    // Additional metadata for better WhatsApp compatibility
+    alternates: {
+      canonical: eventUrl,
+    },
   };
 }
 
@@ -186,11 +245,27 @@ export default async function EventPage({
           </div>
         </CardContent>
         <CardContent>
-          <JoinEventButton
-            eventId={event.id}
-            shortCode={event.shortCode}
-            userJoin={userJoin}
-          />
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className={userJoin ? "w-full" : "flex-1"}>
+              <JoinEventButton
+                eventId={event.id}
+                shortCode={event.shortCode}
+                userJoin={userJoin}
+              />
+            </div>
+            <div className={userJoin ? "w-full sm:w-auto" : "flex-1"}>
+              <WhatsAppShareButton
+                title={event.title}
+                description={event.description}
+                shortCode={event.shortCode}
+                category={event.category}
+                imageUrl={event.imageUrl}
+                location={event.location}
+                startsAt={event.startsAt}
+                endsAt={event.endsAt}
+              />
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>

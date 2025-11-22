@@ -17,12 +17,33 @@ export default function SignInPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
 
     try {
+      // First, check if the email is a registered member
+      const checkResponse = await fetch("/api/auth/check-member", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      const checkData = await checkResponse.json();
+
+      if (!checkResponse.ok || !checkData.isMember) {
+        setError(
+          checkData.error ||
+            "This email is not registered. Only existing members can sign in."
+        );
+        setLoading(false);
+        return;
+      }
+
+      // If member check passes, proceed with magic link
       await signIn("email", {
         email,
         callbackUrl: "/",
@@ -31,6 +52,7 @@ export default function SignInPage() {
       router.push("/auth/verify");
     } catch (error) {
       console.error("Sign in error:", error);
+      setError("An error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -61,10 +83,16 @@ export default function SignInPage() {
                     id="email"
                     name="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setError(null); // Clear error when user types
+                    }}
                     required
                     placeholder="you@example.com"
                   />
+                  {error && (
+                    <p className="mt-2 text-sm text-red-600">{error}</p>
+                  )}
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? "Sending..." : "Send Magic Link"}
