@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireAuth, getSessionUser } from "@/lib/auth-helpers";
+import { requireAuth } from "@/lib/auth-helpers";
 import { z } from "zod";
 
 const updateEventSchema = z.object({
@@ -87,11 +87,11 @@ export async function PUT(
     return NextResponse.json({ event }, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      console.error("Validation errors:", error.errors);
+      console.error("Validation errors:", error.issues);
       return NextResponse.json(
         {
           error: "Invalid input",
-          details: error.errors.map((err) => ({
+          details: error.issues.map((err) => ({
             path: err.path,
             message: err.message,
             code: err.code,

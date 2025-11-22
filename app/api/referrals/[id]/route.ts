@@ -103,7 +103,7 @@ export async function PUT(
       return NextResponse.json(
         {
           error: "Invalid input",
-          details: error.errors,
+          details: error.issues,
         },
         { status: 400 }
       );

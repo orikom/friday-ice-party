@@ -107,11 +107,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ event }, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      console.error("Validation errors:", error.errors);
+      console.error("Validation errors:", error.issues);
       return NextResponse.json(
         {
           error: "Invalid input",
-          details: error.errors.map((err) => ({
+          details: error.issues.map((err) => ({
             path: err.path,
             message: err.message,
             code: err.code,
