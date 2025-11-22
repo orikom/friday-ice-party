@@ -1,4 +1,4 @@
-# Friday Pool Party
+# Friday Ice Party
 
 A community web application for managing events, members, and WhatsApp group notifications.
 
@@ -48,7 +48,7 @@ A community web application for managing events, members, and WhatsApp group not
    Edit `.env` and fill in your values:
 
    ```env
-   DATABASE_URL="postgresql://user:password@localhost:5432/friday_pool_party"
+   DATABASE_URL="postgresql://user:password@localhost:5432/friday_ice_party"
    NEXTAUTH_URL="http://localhost:3000"
    NEXTAUTH_SECRET="your-secret-key-here"
    EMAIL_SERVER="smtp://user:pass@smtp.example.com:587"

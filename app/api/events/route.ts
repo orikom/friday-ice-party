@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
     if (data.targetGroupIds && data.targetGroupIds.length > 0) {
       const siteUrl = process.env.SITE_URL || "http://localhost:3000";
       const eventUrl = `${siteUrl}/events/${shortCode}`;
-      const message = `[Friday Pool Party] ${data.title} — ${data.category}\n${data.description}\nJoin: ${eventUrl}`;
+      const message = `[Friday Ice Party] ${data.title} — ${data.category}\n${data.description}\nJoin: ${eventUrl}`;
 
       const whatsapp = getWhatsAppAdapter();
 

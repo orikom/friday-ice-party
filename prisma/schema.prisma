@@ -24,6 +24,7 @@ enum ReferralStatus {
 model User {
   id            String    @id @default(cuid())
   email         String    @unique
+  password      String? // Hashed password for email/password auth
   emailVerified DateTime?
   name          String?
   imageUrl      String?
@@ -85,9 +86,9 @@ model Event {
   updatedAt   DateTime  @updatedAt
   shortCode   String    @unique // for short links
 
-  createdBy User               @relation("EventCreator", fields: [createdById], references: [id])
-  joins     EventJoin[]
-  targets   EventTargetGroup[]
+  createdBy    User               @relation("EventCreator", fields: [createdById], references: [id])
+  joins        EventJoin[]
+  targets      EventTargetGroup[]
   galleryItems GalleryItem[]
 
   @@index([shortCode])
@@ -206,22 +207,22 @@ model Referral {
 }
 
 model Business {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  category    String   // e.g., "restaurant", "fitness", "beauty", "tech", etc.
-  imageUrl    String?
-  phone       String?
-  email       String?
-  website     String?
-  address     String?
-  city        String?
-  instagramUrl String?
-  linkedinUrl  String?
-  isRecommended Boolean @default(false)
-  ownerId     String   // User who owns/manages this business
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String   @id @default(cuid())
+  name          String
+  description   String?
+  category      String // e.g., "restaurant", "fitness", "beauty", "tech", etc.
+  imageUrl      String?
+  phone         String?
+  email         String?
+  website       String?
+  address       String?
+  city          String?
+  instagramUrl  String?
+  linkedinUrl   String?
+  isRecommended Boolean  @default(false)
+  ownerId       String // User who owns/manages this business
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
@@ -231,19 +232,19 @@ model Business {
 }
 
 model GalleryItem {
-  id          String   @id @default(cuid())
-  title       String?
-  description String?
-  imageUrl    String   // URL to image or video thumbnail
-  videoUrl    String?  // URL to video if it's a video
-  eventId     String?  // Optional - link to event
-  category    String?  // Optional category
+  id           String   @id @default(cuid())
+  title        String?
+  description  String?
+  imageUrl     String // URL to image or video thumbnail
+  videoUrl     String? // URL to video if it's a video
+  eventId      String? // Optional - link to event
+  category     String? // Optional category
   uploadedById String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   event      Event? @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  uploadedBy User  @relation(fields: [uploadedById], references: [id], onDelete: Cascade)
+  uploadedBy User   @relation(fields: [uploadedById], references: [id], onDelete: Cascade)
 
   @@index([eventId])
   @@index([category])

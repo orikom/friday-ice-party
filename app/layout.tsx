@@ -20,7 +20,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FRIDAY POOL PARTY",
+  title: "FRIDAY ICE PARTY",
   description: "אירועי קהילה וספריית חברים",
 };
 
@@ -49,7 +49,7 @@ export default async function RootLayout({
           <nav className="border-b bg-white">
             <div className="container mx-auto flex h-16 items-center justify-between px-4">
               <Link href="/" className="text-xl font-bold text-blue-600">
-                Friday Pool Party
+                Friday Ice Party
               </Link>
               <div className="flex items-center gap-4">
                 <Link href="/members" className="text-sm hover:text-blue-600">

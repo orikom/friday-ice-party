@@ -1,79 +1,59 @@
-import EmailProvider from "next-auth/providers/email";
-import { PrismaAdapter } from "@auth/prisma-adapter";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "./prisma";
 import { Role } from "@prisma/client";
-
-// For development: Use console transport if no EMAIL_SERVER is configured
-const getEmailServer = () => {
-  if (process.env.EMAIL_SERVER) {
-    return process.env.EMAIL_SERVER;
-  }
-
-  // Development mode: Use a mock server that logs to console
-  // NextAuth v5 beta requires a server config, so we use nodemailer's console transport
-  return {
-    host: "localhost",
-    port: 587,
-    secure: false,
-    auth: {
-      user: "dev",
-      pass: "dev",
-    },
-    // In development, we'll override sendVerificationRequest to log to console
-  };
-};
+import { verifyPassword } from "./password";
 
 export const authOptions = {
-  adapter: PrismaAdapter(prisma) as any,
   providers: [
-    EmailProvider({
-      server: getEmailServer(),
-      from: process.env.EMAIL_FROM || "noreply@fridaypoolparty.com",
-      async sendVerificationRequest({ identifier, url, provider }) {
-        // Check if the email belongs to an existing member
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials: any) {
+        if (!credentials?.email || !credentials?.password) {
+          return null;
+        }
+
+        const email = String(credentials.email).toLowerCase().trim();
+        const password = String(credentials.password);
+
         const user = await prisma.user.findUnique({
-          where: { email: identifier.toLowerCase().trim() },
+          where: { email },
+          select: {
+            id: true,
+            email: true,
+            password: true,
+            role: true,
+            name: true,
+            imageUrl: true,
+          },
         });
 
-        if (!user) {
-          // Silently fail - don't send email and don't reveal that the email doesn't exist
-          // This prevents email enumeration attacks
-          console.log(
-            `⚠️  Magic link request blocked for non-member: ${identifier}`
-          );
-          return;
+        if (!user || !user.password) {
+          // Don't reveal if user exists or not (security best practice)
+          return null;
         }
 
-        // In development, log the magic link to console
-        if (
-          process.env.NODE_ENV === "development" &&
-          !process.env.EMAIL_SERVER
-        ) {
-          console.log("\n🔐 Magic Link for", identifier);
-          console.log("👉 Click this link to sign in:");
-          console.log(url);
-          console.log("\n");
-          return;
+        const isValid = await verifyPassword(password, user.password);
+
+        if (!isValid) {
+          return null;
         }
 
-        // In production or when EMAIL_SERVER is set, use default email sending
-        const { host } = new URL(url);
-        const transport = await import("nodemailer").then((mod) =>
-          mod.default.createTransport(provider.server)
-        );
-        await transport.sendMail({
-          to: identifier,
-          from: provider.from,
-          subject: `Sign in to ${host}`,
-          text: `Sign in to ${host}\n${url}\n\n`,
-          html: `<p>Sign in to <strong>${host}</strong></p><p><a href="${url}">Sign in</a></p>`,
-        });
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          image: user.imageUrl,
+          role: user.role,
+        };
       },
     }),
   ],
   pages: {
     signIn: "/auth/signin",
-    verifyRequest: "/auth/verify",
   },
   callbacks: {
     async jwt({ token, user }: any) {

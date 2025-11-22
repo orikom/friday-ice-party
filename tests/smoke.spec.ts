@@ -1,12 +1,12 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("Friday Pool Party", () => {
+test.describe("Friday Ice Party", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("http://localhost:3000");
   });
 
   test("homepage loads", async ({ page }) => {
-    await expect(page.locator("h1")).toContainText("Friday Pool Party");
+    await expect(page.locator("h1")).toContainText("Friday Ice Party");
   });
 
   test("can navigate to members page", async ({ page }) => {

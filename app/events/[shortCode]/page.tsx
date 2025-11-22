@@ -87,7 +87,7 @@ export async function generateMetadata({
       description: event.description,
       type: "website",
       url: eventUrl,
-      siteName: "FRIDAY POOL PARTY",
+      siteName: "FRIDAY ICE PARTY",
       locale: "he_IL",
       images: imageUrl
         ? [

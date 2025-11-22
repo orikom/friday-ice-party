@@ -1,4 +1,4 @@
-# Quick Start Guide - Friday Pool Party
+# Quick Start Guide - Friday Ice Party
 
 ## ✅ What's Already Done
 
@@ -48,7 +48,7 @@ Once signed in as admin:
 1. Click "Admin" in the navigation
 2. Click "Create Event"
 3. Fill in:
-   - Title: "Friday Pool Party"
+   - Title: "Friday Ice Party"
    - Description: "Join us for a fun evening!"
    - Category: "party"
    - Upload an image (optional)

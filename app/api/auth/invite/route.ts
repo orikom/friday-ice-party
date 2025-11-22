@@ -3,9 +3,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth-helpers";
 import { Role } from "@prisma/client";
+import { hashPassword } from "@/lib/password";
 
 const inviteSchema = z.object({
   email: z.string().email(),
+  password: z
+    .string()
+    .min(6, "Password must be at least 6 characters")
+    .optional(),
   phone: z.string().optional(),
   name: z.string().optional(),
   role: z.enum(["ADMIN", "MEMBER"]).default("MEMBER"),
@@ -30,10 +35,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Create user (NextAuth will handle account creation)
+    // Hash password if provided, otherwise user will need to set it later
+    const hashedPassword = data.password
+      ? await hashPassword(data.password)
+      : null;
+
+    // Create user
     const user = await prisma.user.create({
       data: {
         email: data.email,
+        password: hashedPassword,
         phone: data.phone,
         name: data.name,
         role: data.role as Role,

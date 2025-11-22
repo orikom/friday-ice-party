@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 export default function SignInPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -25,35 +26,25 @@ export default function SignInPage() {
     setError(null);
 
     try {
-      // First, check if the email is a registered member
-      const checkResponse = await fetch("/api/auth/check-member", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
       });
 
-      const checkData = await checkResponse.json();
-
-      if (!checkResponse.ok || !checkData.isMember) {
-        setError(
-          checkData.error ||
-            "האימייל הזה לא רשום. רק חברים רשומים יכולים להתחבר."
-        );
+      if (result?.error) {
+        setError("אימייל או סיסמה לא נכונים");
         setLoading(false);
         return;
       }
 
-      // If member check passes, proceed with magic link
-      await signIn("email", {
-        email,
-        callbackUrl: "/",
-        redirect: false,
-      });
-      router.push("/auth/verify");
+      if (result?.ok) {
+        router.push("/");
+        router.refresh();
+      }
     } catch (error) {
       console.error("Sign in error:", error);
       setError("אירעה שגיאה. אנא נסה שוב.");
-    } finally {
       setLoading(false);
     }
   };
@@ -64,9 +55,7 @@ export default function SignInPage() {
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl">התחבר</CardTitle>
-            <CardDescription>
-              הכנס את האימייל שלך כדי לקבל קישור קסם
-            </CardDescription>
+            <CardDescription>הכנס את האימייל והסיסמה שלך</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit}>
@@ -85,17 +74,37 @@ export default function SignInPage() {
                     value={email}
                     onChange={(e) => {
                       setEmail(e.target.value);
-                      setError(null); // Clear error when user types
+                      setError(null);
                     }}
                     required
                     placeholder="you@example.com"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-medium mb-2"
+                  >
+                    סיסמה
+                  </label>
+                  <Input
+                    type="password"
+                    id="password"
+                    name="password"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      setError(null);
+                    }}
+                    required
+                    placeholder="••••••••"
                   />
                   {error && (
                     <p className="mt-2 text-sm text-red-600">{error}</p>
                   )}
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "שולח..." : "שלח קישור קסם"}
+                  {loading ? "מתחבר..." : "התחבר"}
                 </Button>
               </div>
             </form>

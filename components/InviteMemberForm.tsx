@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 
 const inviteSchema = z.object({
   email: z.string().email("אימייל לא תקין"),
+  password: z.string().min(6, "סיסמה חייבת להכיל לפחות 6 תווים").optional(),
   phone: z.string().optional(),
   name: z.string().optional(),
   role: z.enum(["ADMIN", "MEMBER"]),
@@ -73,6 +74,22 @@ export function InviteMemberForm() {
         {errors.email && (
           <p className="text-sm text-red-600 mt-1">{errors.email.message}</p>
         )}
+      </div>
+
+      <div>
+        <Label htmlFor="password">סיסמה</Label>
+        <Input
+          id="password"
+          type="password"
+          {...register("password")}
+          placeholder="אופציונלי - לפחות 6 תווים"
+        />
+        {errors.password && (
+          <p className="text-sm text-red-600 mt-1">{errors.password.message}</p>
+        )}
+        <p className="text-xs text-gray-500 mt-1">
+          אם לא תזין סיסמה, המשתמש יצטרך להגדיר אותה מאוחר יותר
+        </p>
       </div>
 
       <div>
