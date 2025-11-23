@@ -56,7 +56,7 @@ async function getEvents(isAuthenticated: boolean) {
     return [];
   }
 }
-
+// some comment to remove later
 export default async function HomePage() {
   const user = await getSessionUser(); // Optional authentication
   const isAuthenticated = !!user;
