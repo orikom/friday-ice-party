@@ -27,10 +27,20 @@ export async function middleware(req: NextRequest) {
   }
 
   // Check authentication for protected routes
-  const token = await getToken({
+  // Try to get token - NextAuth will auto-detect cookie name
+  let token = await getToken({
     req,
     secret: process.env.NEXTAUTH_SECRET,
   });
+
+  // If no token found and we're in production (HTTPS), try with secure cookie name
+  if (!token && (process.env.NODE_ENV === "production" || req.url.startsWith("https://"))) {
+    token = await getToken({
+      req,
+      secret: process.env.NEXTAUTH_SECRET,
+      cookieName: "__Secure-next-auth.session-token",
+    });
+  }
 
   // Protected routes that require authentication
   const protectedRoutes = ["/profile", "/referrals", "/admin"];
