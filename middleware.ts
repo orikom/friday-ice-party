@@ -27,26 +27,39 @@ export async function middleware(req: NextRequest) {
   }
 
   // Check authentication for protected routes
-  // In production (HTTPS), NextAuth uses __Secure- prefix for cookies
-  // Check HTTPS first as it's more reliable than NODE_ENV in edge runtime
-  const isHttps = req.url.startsWith("https://");
-  const cookieName = isHttps
-    ? "__Secure-next-auth.session-token"
-    : "next-auth.session-token";
-
-  // Try with the determined cookie name first
+  // Try auto-detect first (NextAuth v5 should handle this)
   let token = await getToken({
     req,
     secret: process.env.NEXTAUTH_SECRET,
-    cookieName,
   });
 
-  // If no token found, try without specifying cookieName (auto-detect)
+  // Debug: Log cookie header (remove in production)
+  if (process.env.NODE_ENV === "development") {
+    console.log("Middleware - Cookie header:", req.headers.get("cookie"));
+    console.log("Middleware - Token found:", !!token);
+  }
+
+  // If no token found, try explicit cookie names
+  // NextAuth v5 beta might use different cookie names
   if (!token) {
-    token = await getToken({
-      req,
-      secret: process.env.NEXTAUTH_SECRET,
-    });
+    const isHttps = req.url.startsWith("https://");
+    const possibleCookieNames = isHttps
+      ? [
+          "__Secure-next-auth.session-token",
+          "next-auth.session-token",
+          "__Secure-authjs.session-token",
+          "authjs.session-token",
+        ]
+      : ["next-auth.session-token", "authjs.session-token"];
+
+    for (const cookieName of possibleCookieNames) {
+      token = await getToken({
+        req,
+        secret: process.env.NEXTAUTH_SECRET,
+        cookieName,
+      });
+      if (token) break;
+    }
   }
 
   // Protected routes that require authentication
