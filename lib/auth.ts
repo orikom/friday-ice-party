@@ -1,3 +1,4 @@
+import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "./prisma";
 import { Role } from "@prisma/client";
@@ -60,18 +61,21 @@ export const authOptions = {
   callbacks: {
     async jwt({ token, user }: any) {
       if (user) {
-        const dbUser = await prisma.user.findUnique({
-          where: { email: user.email! },
-          select: { id: true, role: true },
-        });
-        token.id = dbUser?.id || "";
-        token.role = dbUser?.role || Role.MEMBER;
+        // Set user data directly from the authorize function
+        token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
+        token.picture = user.image;
+        token.role = user.role || Role.MEMBER;
       }
       return token;
     },
     async session({ session, token }: any) {
-      if (session.user) {
+      if (session.user && token) {
         session.user.id = (token.id as string) || "";
+        session.user.email = (token.email as string) || "";
+        session.user.name = (token.name as string) || null;
+        session.user.image = (token.picture as string) || null;
         session.user.role = (token.role as Role) || Role.MEMBER;
       }
       return session;
@@ -105,3 +109,6 @@ declare module "next-auth/jwt" {
     role: Role;
   }
 }
+
+// Create NextAuth instance and export auth function
+export const { handlers, auth } = NextAuth(authOptions);

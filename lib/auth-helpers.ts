@@ -1,31 +1,22 @@
-import { getToken } from "next-auth/jwt";
-import { cookies } from "next/headers";
+import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
 // Type definition for Role to avoid Prisma Client dependency during build
 type Role = "ADMIN" | "MEMBER";
 
 export async function getSessionUser() {
-  const cookieStore = await cookies();
-  const token = await getToken({
-    req: {
-      headers: {
-        cookie: cookieStore.toString(),
-      },
-    } as Parameters<typeof getToken>[0]["req"],
-    secret: process.env.NEXTAUTH_SECRET,
-  });
+  const session = await auth();
 
-  if (!token) {
+  if (!session?.user) {
     return null;
   }
 
   return {
-    id: token.id as string,
-    email: token.email as string,
-    name: token.name as string | null,
-    image: token.picture as string | null,
-    role: (token.role as Role) || ("MEMBER" as Role),
+    id: session.user.id as string,
+    email: session.user.email as string,
+    name: session.user.name as string | null,
+    image: session.user.image as string | null,
+    role: (session.user.role as Role) || ("MEMBER" as Role),
   };
 }
 
