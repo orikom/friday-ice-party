@@ -4,6 +4,8 @@ import { Role } from "@prisma/client";
 import { verifyPassword } from "./password";
 
 export const authOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
+  trustHost: true, // Required for Vercel deployments
   providers: [
     CredentialsProvider({
       name: "Credentials",
