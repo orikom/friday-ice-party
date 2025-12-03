@@ -33,12 +33,6 @@ export async function middleware(req: NextRequest) {
     secret: process.env.NEXTAUTH_SECRET,
   });
 
-  // Debug: Log cookie header (remove in production)
-  if (process.env.NODE_ENV === "development") {
-    console.log("Middleware - Cookie header:", req.headers.get("cookie"));
-    console.log("Middleware - Token found:", !!token);
-  }
-
   // If no token found, try explicit cookie names
   // NextAuth v5 beta might use different cookie names
   if (!token) {

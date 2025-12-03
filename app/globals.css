@@ -120,3 +120,16 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Prevent horizontal scroll on mobile */
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Ensure containers don't overflow */
+.container {
+  max-width: 100%;
+  overflow-x: hidden;
+}

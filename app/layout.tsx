@@ -7,6 +7,7 @@ import { getSessionUser } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import { SignOutButton } from "@/components/SignOutButton";
+import { MobileNav } from "@/components/MobileNav";
 import Image from "next/image";
 
 const geistSans = Geist({
@@ -46,70 +47,89 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <SessionProvider>
-          <nav className="border-b bg-white">
-            <div className="container mx-auto flex h-16 items-center justify-between px-4">
-              <Link href="/" className="text-xl font-bold text-blue-600">
-                Friday Ice Party
-              </Link>
-              <div className="flex items-center gap-4">
-                <Link href="/members" className="text-sm hover:text-blue-600">
-                  חברים
+          <nav className="border-b bg-white sticky top-0 z-50">
+            <div className="container mx-auto px-4">
+              <div className="flex h-16 items-center justify-between">
+                {/* Logo - always visible */}
+                <Link
+                  href="/"
+                  className="text-xl font-bold text-blue-600 shrink-0"
+                >
+                  Friday Ice Party
                 </Link>
-                <Link href="/business" className="text-sm hover:text-blue-600">
-                  עסקים
-                </Link>
-                {user ? (
-                  <>
-                    <Link
-                      href="/gallery"
-                      className="text-sm hover:text-blue-600"
-                    >
-                      גלריה
-                    </Link>
-                    <Link
-                      href="/referrals/new"
-                      className="text-sm hover:text-blue-600"
-                    >
-                      הפנה מישהו
-                    </Link>
-                    {user.role === "ADMIN" && (
-                      <Link
-                        href="/admin"
-                        className="text-sm hover:text-blue-600"
-                      >
-                        ניהול
-                      </Link>
-                    )}
-                    <Link
-                      href="/profile"
-                      className="flex items-center hover:opacity-80 transition-opacity"
-                    >
-                      {userImageUrl ? (
-                        <div className="relative w-8 h-8">
-                          <Image
-                            src={userImageUrl}
-                            alt={user.name || user.email}
-                            fill
-                            className="rounded-full object-cover"
-                          />
-                        </div>
-                      ) : (
-                        <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                          <span className="text-gray-600 text-sm font-medium">
-                            {(user.name || user.email)[0].toUpperCase()}
-                          </span>
-                        </div>
-                      )}
-                    </Link>
-                    <SignOutButton />
-                  </>
-                ) : (
-                  <Link href="/auth/signin">
-                    <Button variant="default" size="sm">
-                      התחבר
-                    </Button>
+
+                {/* Desktop Navigation - hidden on mobile */}
+                <div className="hidden md:flex items-center gap-4">
+                  <Link
+                    href="/members"
+                    className="text-sm hover:text-blue-600 whitespace-nowrap"
+                  >
+                    חברים
                   </Link>
-                )}
+                  <Link
+                    href="/business"
+                    className="text-sm hover:text-blue-600 whitespace-nowrap"
+                  >
+                    עסקים
+                  </Link>
+                  {user ? (
+                    <>
+                      <Link
+                        href="/gallery"
+                        className="text-sm hover:text-blue-600 whitespace-nowrap"
+                      >
+                        גלריה
+                      </Link>
+                      <Link
+                        href="/referrals/new"
+                        className="text-sm hover:text-blue-600 whitespace-nowrap"
+                      >
+                        הפנה מישהו
+                      </Link>
+                      {user.role === "ADMIN" && (
+                        <Link
+                          href="/admin"
+                          className="text-sm hover:text-blue-600 whitespace-nowrap"
+                        >
+                          ניהול
+                        </Link>
+                      )}
+                      <Link
+                        href="/profile"
+                        className="flex items-center hover:opacity-80 transition-opacity shrink-0"
+                      >
+                        {userImageUrl ? (
+                          <div className="relative w-8 h-8">
+                            <Image
+                              src={userImageUrl}
+                              alt={user.name || user.email}
+                              fill
+                              className="rounded-full object-cover"
+                            />
+                          </div>
+                        ) : (
+                          <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                            <span className="text-gray-600 text-sm font-medium">
+                              {(user.name || user.email)[0].toUpperCase()}
+                            </span>
+                          </div>
+                        )}
+                      </Link>
+                      <SignOutButton />
+                    </>
+                  ) : (
+                    <Link href="/auth/signin">
+                      <Button variant="default" size="sm">
+                        התחבר
+                      </Button>
+                    </Link>
+                  )}
+                </div>
+
+                {/* Mobile Hamburger Menu - only visible on mobile */}
+                <div className="md:hidden">
+                  <MobileNav user={user} userImageUrl={userImageUrl} />
+                </div>
               </div>
             </div>
           </nav>

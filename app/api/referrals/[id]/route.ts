@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth-helpers";
 import { z } from "zod";
 import { Role } from "@prisma/client";
+import { createInviteToken } from "@/lib/invite-token";
+import { sendEmail } from "@/lib/email";
 
 const approveSchema = z.object({
   action: z.enum(["approve", "reject"]),
@@ -41,7 +43,19 @@ export async function PUT(
     }
 
     if (action === "approve") {
-      // Create user account
+      // Check if user already exists
+      const existingUser = await prisma.user.findUnique({
+        where: { email: referral.email },
+      });
+
+      if (existingUser) {
+        return NextResponse.json(
+          { error: "User with this email already exists" },
+          { status: 400 }
+        );
+      }
+
+      // Create user account (without password - they'll set it via invitation)
       const newUser = await prisma.user.create({
         data: {
           email: referral.email,
@@ -55,6 +69,49 @@ export async function PUT(
           role: Role.MEMBER,
         },
       });
+
+      // Generate invitation token
+      const inviteToken = await createInviteToken(referral.email, 7); // Expires in 7 days
+
+      // Get site URL for invitation link
+      const siteUrl = process.env.SITE_URL || process.env.NEXTAUTH_URL || "http://localhost:3000";
+      const inviteUrl = `${siteUrl}/auth/invite/${inviteToken}`;
+
+      // Send invitation email
+      try {
+        await sendEmail({
+          to: referral.email,
+          subject: "ברוכים הבאים לקהילת הקרח! Welcome to Friday Ice Party",
+          html: `
+            <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <h1>ברוכים הבאים לקהילת הקרח!</h1>
+              <p>שלום ${referral.name || referral.email},</p>
+              <p>ההפניה שלך אושרה ואתה מוזמן להצטרף לקהילת הקרח!</p>
+              <p>כדי להתחיל, אנא הגדר את הסיסמה שלך על ידי לחיצה על הקישור הבא:</p>
+              <p style="margin: 30px 0;">
+                <a href="${inviteUrl}" style="background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">
+                  הגדר סיסמה / Set Password
+                </a>
+              </p>
+              <p style="color: #666; font-size: 14px;">
+                הקישור יפוג תוך 7 ימים. אם לא ביקשת את זה, תוכל להתעלם מהאימייל הזה.
+              </p>
+              <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
+              <div dir="ltr" style="font-size: 14px; color: #666;">
+                <p>Hello ${referral.name || referral.email},</p>
+                <p>Your referral has been approved and you're invited to join the Friday Ice Party community!</p>
+                <p>To get started, please set your password by clicking the link above.</p>
+                <p style="color: #999; font-size: 12px;">
+                  This link expires in 7 days. If you didn't request this, you can ignore this email.
+                </p>
+              </div>
+            </div>
+          `,
+        });
+      } catch (emailError) {
+        console.error("Failed to send invitation email:", emailError);
+        // Don't fail the approval if email fails - user can still be invited manually
+      }
 
       // Update referral status
       await prisma.referral.update({
@@ -73,6 +130,7 @@ export async function PUT(
             status: "APPROVED",
           },
           user: newUser,
+          inviteSent: true,
         },
         { status: 200 }
       );
