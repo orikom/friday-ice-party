@@ -11,6 +11,8 @@ echo "  ✅ Create/Update admin user (admin@fridaypoolparty.com / password: 1234
 echo "  ✅ Create/Update test user (user@fridaypoolparty.com / password: 1234)"
 echo "  ✅ Create default groups (party, yoga, mingling, business)"
 echo "  ✅ Create 10 Israeli members with Hebrew descriptions"
+echo "  ✅ Create 6 sample businesses (fitness, restaurant, design, beauty, tech)"
+echo "  ✅ Create 6 sample gallery items with images"
 echo "  ✅ Use upsert (won't duplicate if already exists, will update passwords)"
 echo ""
 
@@ -56,6 +58,8 @@ if [ $? -eq 0 ]; then
     echo "  - Test user: user@fridaypoolparty.com (password: 1234)"
     echo "  - Default groups: party, yoga, mingling, business"
     echo "  - 10 Israeli members with Hebrew descriptions (all password: 1234)"
+    echo "  - 6 businesses (fitness, restaurant, design, beauty, tech)"
+    echo "  - 6 gallery items with images"
     echo ""
     echo "You can now sign in with email and password!"
 else

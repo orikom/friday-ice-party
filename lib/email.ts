@@ -52,6 +52,10 @@ export async function sendEmail({ to, subject, html, text }: EmailOptions) {
   const emailFrom = process.env.EMAIL_FROM || "noreply@fridaypoolparty.com";
   const transport = getTransporter();
 
+  if (!transport) {
+    throw new Error("Email transporter is not configured");
+  }
+
   try {
     await transport.sendMail({
       from: emailFrom,
@@ -65,5 +69,3 @@ export async function sendEmail({ to, subject, html, text }: EmailOptions) {
     throw error;
   }
 }
-
-
