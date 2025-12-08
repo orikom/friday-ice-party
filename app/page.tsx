@@ -107,7 +107,7 @@ export default async function HomePage() {
 
         {/* Hero Content */}
         <div className="relative z-10 h-full flex flex-col justify-center items-center px-4">
-          <div className="container mx-auto max-w-4xl w-full">
+          <div className="w-full max-w-[1200px] mx-auto">
             {/* Title and Subtitle */}
             <div className="text-center mb-8">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 drop-shadow-lg">
@@ -133,7 +133,7 @@ export default async function HomePage() {
       </div>
 
       {/* Rest of the content */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="w-full max-w-[1200px] mx-auto px-4 py-8">
         {/* New Members Banner */}
         <NewMembersBanner members={newMembers} />
 
