@@ -14,6 +14,31 @@ import Image from "next/image";
 import { formatDateRange } from "@/lib/time";
 import { getSessionUser } from "@/lib/auth-helpers";
 import { MemberSearch } from "@/components/MemberSearch";
+import { NewMembersBanner } from "@/components/NewMembersBanner";
+
+async function getNewMembers() {
+  try {
+    const members = await prisma.user.findMany({
+      where: {
+        role: "MEMBER",
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        imageUrl: true,
+        occupation: true,
+        description: true,
+      },
+      orderBy: { createdAt: "desc" },
+      take: 3,
+    });
+    return members;
+  } catch (error) {
+    console.error("Failed to fetch new members:", error);
+    return [];
+  }
+}
 
 async function getEvents(isAuthenticated: boolean) {
   try {
@@ -61,6 +86,7 @@ export default async function HomePage() {
   const user = await getSessionUser(); // Optional authentication
   const isAuthenticated = !!user;
   const events = await getEvents(isAuthenticated);
+  const newMembers = await getNewMembers();
 
   return (
     <div>
@@ -108,6 +134,9 @@ export default async function HomePage() {
 
       {/* Rest of the content */}
       <div className="container mx-auto px-4 py-8">
+        {/* New Members Banner */}
+        <NewMembersBanner members={newMembers} />
+
         {/* Events Section */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">

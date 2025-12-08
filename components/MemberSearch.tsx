@@ -29,6 +29,7 @@ export function MemberSearch() {
     width: number;
   } | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (searched && formRef.current) {
@@ -54,9 +55,8 @@ export function MemberSearch() {
     }
   }, [searched]);
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!searchQuery.trim()) {
+  const performSearch = async (query: string) => {
+    if (!query.trim()) {
       setMembers([]);
       setSearched(false);
       setDropdownStyle(null);
@@ -67,7 +67,7 @@ export function MemberSearch() {
     setSearched(true);
     try {
       const params = new URLSearchParams();
-      params.set("query", searchQuery);
+      params.set("query", query);
       const response = await fetch(`/api/members?${params.toString()}`);
       const data = await response.json();
       setMembers(data.members || []);
@@ -76,8 +76,42 @@ export function MemberSearch() {
       setMembers([]);
     } finally {
       setLoading(false);
-      setSearchQuery("");
     }
+  };
+
+  useEffect(() => {
+    // Clear previous timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    // If input is empty, clear results immediately
+    if (!searchQuery.trim()) {
+      setMembers([]);
+      setSearched(false);
+      setDropdownStyle(null);
+      return;
+    }
+
+    // Debounce search by 300ms
+    searchTimeoutRef.current = setTimeout(() => {
+      performSearch(searchQuery);
+    }, 300);
+
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, [searchQuery]);
+
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+    await performSearch(searchQuery);
+    setSearchQuery("");
   };
 
   const DropdownContent = () => {
