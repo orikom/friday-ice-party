@@ -49,8 +49,9 @@ export default async function RootLayout({
         <SessionProvider>
           <nav className="border-b bg-white sticky top-0 z-50">
             <div className="container mx-auto px-4">
-              <div className="flex h-16 items-center justify-between">
-                {/* Logo - always visible */}
+              {/* Desktop Layout */}
+              <div className="hidden md:flex h-16 items-center justify-between">
+                {/* Logo */}
                 <Link
                   href="/"
                   className="text-xl font-bold text-blue-600 shrink-0"
@@ -58,8 +59,8 @@ export default async function RootLayout({
                   Friday Ice Party
                 </Link>
 
-                {/* Desktop Navigation - hidden on mobile */}
-                <div className="hidden md:flex items-center gap-4">
+                {/* Desktop Navigation */}
+                <div className="flex items-center gap-4">
                   <Link
                     href="/members"
                     className="text-sm hover:text-blue-600 whitespace-nowrap"
@@ -125,11 +126,22 @@ export default async function RootLayout({
                     </Link>
                   )}
                 </div>
+              </div>
 
-                {/* Mobile Hamburger Menu - only visible on mobile */}
-                <div className="md:hidden">
+              {/* Mobile Layout - Logo on left, Hamburger on right */}
+              <div className="flex md:hidden h-16 items-center justify-between">
+                {/* Mobile Hamburger Menu - on right in mobile */}
+                <div>
                   <MobileNav user={user} userImageUrl={userImageUrl} />
                 </div>
+
+                {/* Logo - on left in mobile */}
+                <Link
+                  href="/"
+                  className="text-xl font-bold text-blue-600 shrink-0"
+                >
+                  Friday Ice Party
+                </Link>
               </div>
             </div>
           </nav>
