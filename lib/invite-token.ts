@@ -68,11 +68,11 @@ export async function verifyInviteToken(
  * Delete an invitation token (after it's been used)
  */
 export async function deleteInviteToken(token: string): Promise<void> {
-  await prisma.verificationToken.delete({
-    where: { token },
-  }).catch(() => {
-    // Ignore errors if token doesn't exist
-  });
+  await prisma.verificationToken
+    .delete({
+      where: { token },
+    })
+    .catch(() => {
+      // Ignore errors if token doesn't exist
+    });
 }
-
-

@@ -69,7 +69,9 @@ export default function InvitePage() {
     }
 
     if (password.length < 6) {
-      setError("הסיסמה חייבת להכיל לפחות 6 תווים / Password must be at least 6 characters");
+      setError(
+        "הסיסמה חייבת להכיל לפחות 6 תווים / Password must be at least 6 characters"
+      );
       setSubmitting(false);
       return;
     }
@@ -98,7 +100,9 @@ export default function InvitePage() {
       }, 2000);
     } catch (error) {
       console.error("Set password error:", error);
-      setError("אירעה שגיאה. אנא נסה שוב / An error occurred. Please try again.");
+      setError(
+        "אירעה שגיאה. אנא נסה שוב / An error occurred. Please try again."
+      );
       setSubmitting(false);
     }
   };
@@ -161,7 +165,8 @@ export default function InvitePage() {
                 הסיסמה שלך הוגדרה בהצלחה. אתה מועבר לדף ההתחברות...
               </p>
               <p className="text-sm text-gray-500">
-                Your password has been set successfully. Redirecting to sign in...
+                Your password has been set successfully. Redirecting to sign
+                in...
               </p>
             </CardContent>
           </Card>
@@ -175,7 +180,9 @@ export default function InvitePage() {
       <div className="max-w-md mx-auto">
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl">הגדר סיסמה / Set Password</CardTitle>
+            <CardTitle className="text-2xl">
+              הגדר סיסמה / Set Password
+            </CardTitle>
             <CardDescription>
               {userName
                 ? `שלום ${userName}, אנא הגדר את הסיסמה שלך`
@@ -248,5 +255,3 @@ export default function InvitePage() {
     </div>
   );
 }
-
-
