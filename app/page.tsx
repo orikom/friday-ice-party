@@ -67,7 +67,7 @@ export default async function HomePage() {
       {/* Hero Section with Image Background */}
       <div className="relative w-full h-[66vh] min-h-[500px] overflow-hidden">
         {/* Background Image */}
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 overflow-hidden">
           <Image
             src="https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
             alt="Party fans raising hands - person performing heart hand gesture"
@@ -81,7 +81,7 @@ export default async function HomePage() {
 
         {/* Hero Content */}
         <div className="relative z-10 h-full flex flex-col justify-center items-center px-4">
-          <div className="container mx-auto max-w-4xl">
+          <div className="container mx-auto max-w-4xl w-full">
             {/* Title and Subtitle */}
             <div className="text-center mb-8">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 drop-shadow-lg">
